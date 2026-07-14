@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SNL iCare Online Application v1.8</title>
+<style>
+:root{--bg:#f7f9fc;--card:#fff;--text:#172033;--muted:#667085;--line:#d0d5dd;--blue:#175cd3;--soft:#eff8ff;--green:#079455;--red:#d92d20}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{font-weight:800;color:var(--blue);margin-right:auto}.status{font-size:13px;color:var(--muted)}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:750}.primary{background:var(--blue);color:#fff}.secondary{background:#fff;border:1px solid var(--line);color:var(--text)}.success{background:var(--green);color:#fff}
+main{max-width:900px;margin:auto;padding:18px}.section{display:none;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(16,24,40,.06)}.section.active{display:block}
+h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.full{grid-column:1/-1}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;text-align:left}
+.compact-demographics{display:grid;grid-template-columns:110px minmax(180px,1fr) 90px;gap:12px;align-items:end}.compact-measures{display:grid;grid-template-columns:1fr 1fr;gap:14px}.date-control{display:block}
+.date-control button{white-space:nowrap}
+.readonly{background:#f2f4f7!important;color:#475467}
+.address-wrap{position:relative}
+.address-suggestions{position:absolute;left:0;right:0;top:100%;z-index:35;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px rgba(16,24,40,.16);max-height:240px;overflow:auto;display:none}
+.address-suggestions.open{display:block}
+.address-suggestions button{width:100%;text-align:left;border:0;background:#fff;padding:10px 12px;border-bottom:1px solid #f0f2f5}
+.address-suggestions button:last-child{border-bottom:0}
+.address-suggestions button:hover{background:var(--soft)}
+.field-error{border-color:var(--red)!important;background:#fff5f5!important}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}.notice{background:var(--soft);border-left:4px solid var(--blue);padding:13px;border-radius:10px;margin:14px 0}.warning{background:#fff7ed;border-left-color:#f79009}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px;font-weight:700}.choice.selected{border-color:var(--blue);background:var(--soft)}
+.question{padding:14px 0;border-bottom:1px solid var(--line)}.qtext{line-height:1.4}.yn{display:flex;gap:20px;margin-top:10px}.details{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fafcff}.hidden{display:none!important}
+.progress{width:100%;height:6px;background:#eef1f5;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--blue);width:0}
+.drawerOverlay{position:fixed;inset:0;background:rgba(16,24,40,.45);display:none;z-index:50}.drawerOverlay.open{display:block}.drawer{position:fixed;left:-390px;top:0;width:min(370px,92vw);height:100vh;background:#fff;z-index:60;padding:18px;overflow:auto;box-shadow:10px 0 30px rgba(16,24,40,.25);transition:.22s}.drawer.open{left:0}.drawer button.item{width:100%;text-align:left;border:0;background:#fff;padding:11px;border-radius:9px;margin:3px 0}.drawer button.item.active{background:var(--soft);color:var(--blue)}.drawer button.item.done::after{content:" ✓";color:var(--green)}
+.sigbox{border:1px solid var(--line);border-radius:12px;padding:14px}.signed{color:var(--green);font-weight:700}.signature-needed{display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#b54708;border:1px solid #fedf89;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;vertical-align:middle}.signature-note{margin:10px 0 14px;padding:11px 13px;background:#fff7ed;border-left:4px solid #f79009;border-radius:10px;color:#7a2e0e}
+.replacement-alert{color:var(--red);font-style:italic;font-weight:800;margin:14px 0}
+.form-preview{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;margin:10px 0}
+.policy-row{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;background:#fafcff}
+.modalBack{position:fixed;inset:0;background:rgba(16,24,40,.65);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}.modalBack.open{display:flex}.modal{width:min(760px,96vw);background:#fff;border-radius:18px;padding:18px}.modal canvas{width:100%;height:260px;border:2px solid #98a2b3;border-radius:12px;touch-action:none}.modalActions{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
+@media(max-width:650px){main{padding:10px}.section{padding:16px}.grid,.choice-row,.compact-demographics,.compact-measures{grid-template-columns:1fr}header{align-items:stretch}.brand{width:100%}}
+</style>
+</head>
+<body>
+<div class="drawerOverlay" id="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2>Application Sections</h2><button class="btn secondary" onclick="closeDrawer()">Close</button></div>
+  <div id="drawerItems"></div>
+</aside>
+<header>
+  <div class="brand">SNL iCare Online Application</div>
+  <button class="btn secondary" onclick="openDrawer()">Sections</button>
+  <button class="btn secondary" onclick="clearCurrentSection()">Clear Section</button>
+  <button class="btn secondary" onclick="saveDraft(true)">Save Draft</button>
+  <button class="btn success" onclick="generatePdf()">Generate PDF</button>
+  <span class="status" id="status"></span>
+  <div class="progress"><div id="progressBar"></div></div>
+</header>
+<main>
+<section class="section active" data-key="agent"><h1>Agent Information</h1><p class="sub">Entered once and reused throughout the application.</p>
+<div class="grid">
+<div class="field"><label>Agent Name</label><input data-field="Agents Printed Name" value="Clerissa Christian"></div>
+<div class="field"><label>Agent Email</label><input id="agentEmail" value="clerissac@gmail.com"></div>
+<div class="field"><label>Writing Agent Number</label><input data-field="Writing Agent"></div>
+<div class="field"><label>Billing Agent Number</label><input data-field="Billing Agent"></div>
+</div></section>
+
+<section class="section" data-key="insured"><h1>Proposed Insured</h1>
+<div class="grid">
+<div class="field full"><label>Name of Proposed Insured (First Initial Last)</label><input data-field="Name of Proposed Insured please print First Initial Last" id="insuredName"></div>
+<div class="full compact-demographics">
+  <div class="field"><label>Gender</label><select data-field="Gender"><option></option><option>Male</option><option>Female</option></select></div>
+  <div class="field"><label>Birthdate</label><input data-field="Birthdate" id="birthdateText" type="text" inputmode="numeric" placeholder="mm/dd/yyyy" maxlength="10" autocomplete="bday" aria-label="Birthdate in month day year format"></div>
+  <div class="field"><label>Age</label><input data-field="Age" id="calculatedAge" class="readonly" readonly></div>
+</div>
+<div class="full compact-measures">
+  <div class="field"><label>Height</label><input data-field="Height"></div>
+  <div class="field"><label>Weight</label><input data-field="Weight"></div>
+</div>
+<div class="field full address-wrap"><label>Street Address</label>
+<input data-field="Street Address" id="insuredStreet" autocomplete="street-address" placeholder="Start typing the street address">
+<div class="address-suggestions" id="addressSuggestions"></div>
+</div>
+<div class="field"><label>City</label><input data-field="City" id="insuredCity" autocomplete="address-level2"></div>
+<div class="field"><label>State</label><input data-field="State" id="insuredState" autocomplete="address-level1"></div>
+<div class="field"><label>ZIP</label><input data-field="Zip" id="insuredZip" autocomplete="postal-code" inputmode="numeric"></div>
+<div class="field"><label>Birth State</label><input data-field="Birth State"></div>
+<div class="field"><label>Telephone</label><input data-field="Proposed Insureds Telephone Number" id="insuredPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="###-###-####" maxlength="12"></div>
+<div class="field"><label>Email</label><input id="insuredEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com"></div>
+<div class="field"><label>Driver's License #</label><input data-field="Drivers License"></div><div class="field"><label>State Issued</label><input data-field="State Issued"></div>
+<div class="field"><label>Social Security Number/TIN</label><input data-field="Social Security Number/TIN" id="insuredSSN" inputmode="numeric" autocomplete="off" placeholder="###-##-####" maxlength="11"></div>
+<div class="field"><label>Occupation</label><input data-field="Proposed Insureds Occupation"></div>
+<div class="field"><label>Work Phone</label><input data-field="Work Phone Number" id="workPhone" type="tel" inputmode="tel" placeholder="###-###-####" maxlength="12"></div>
+<div class="field full"><label>Name and Address of Employer</label><input data-field="Name and Address of Employer"></div>
+<div class="field"><label>Annual Income</label><input data-field="annual income"></div>
+</div></section>
+
+<section class="section" data-key="owner"><h1>Owner</h1><p><strong>Is the owner other than the Proposed Insured?</strong></p>
+<div class="choice-row"><button class="choice selected" onclick="other('owner',false,this)">No</button><button class="choice" onclick="other('owner',true,this)">Yes</button></div>
+<div class="notice">If No, the owner section stays blank unless the insured is under 18.</div>
+<div class="grid hidden" id="ownerFields">
+<div class="field full"><label>Owner's Name</label><input data-field="Owners Name if other than the Proposed Insured" id="ownerName"></div>
+<div class="field"><label>Relationship</label><input data-field="Relationship"></div>
+<div class="field full address-wrap"><label>Address</label>
+<input data-field="Address" id="ownerStreet" autocomplete="street-address" placeholder="Start typing the street address">
+<div class="address-suggestions" id="ownerAddressSuggestions"></div>
+</div>
+<div class="field"><label>City</label><input data-field="City_2" id="ownerCity" autocomplete="address-level2"></div>
+<div class="field"><label>State</label><input data-field="State_2" id="ownerState" autocomplete="address-level1"></div>
+<div class="field"><label>ZIP</label><input data-field="Zip_2" id="ownerZip" autocomplete="postal-code" inputmode="numeric"></div>
+<div class="field"><label>Telephone</label><input data-field="Telephone Number" id="ownerPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="###-###-####" maxlength="12"></div>
+<div class="field"><label>SSN/TIN</label><input data-field="Social Security NumberTIN_2" id="ownerSSN" inputmode="numeric" autocomplete="off" placeholder="###-##-####" maxlength="11"></div>
+<div class="field"><label>Age</label><input data-field="Age_2"></div>
+<div class="field full"><label>Email</label><input id="ownerEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com"></div>
+</div></section>
+
+<section class="section" data-key="payor"><h1>Payor</h1><p><strong>Is the payor other than the Proposed Insured?</strong></p>
+<div class="choice-row"><button class="choice selected" onclick="other('payor',false,this)">No</button><button class="choice" onclick="other('payor',true,this)">Yes</button></div>
+<div class="notice">If No, payor fields on the application stay blank. The Conditional Receipt still uses the Proposed Insured as the payor.</div>
+<div class="grid hidden" id="payorFields">
+<div class="field full"><label>Payor's Name</label><input data-field="Payors Name if other than the Proposed Insured" id="payorName"></div>
+<div class="field"><label>Relationship</label><input data-field="Relationship_2"></div>
+<div class="field full address-wrap"><label>Address</label>
+<input data-field="Address_2" id="payorStreet" autocomplete="street-address" placeholder="Start typing the street address">
+<div class="address-suggestions" id="payorAddressSuggestions"></div>
+</div>
+<div class="field"><label>City</label><input data-field="City_3" id="payorCity" autocomplete="address-level2"></div>
+<div class="field"><label>State</label><input data-field="State_3" id="payorState" autocomplete="address-level1"></div>
+<div class="field"><label>ZIP</label><input data-field="Zip_3" id="payorZip" autocomplete="postal-code" inputmode="numeric"></div>
+<div class="field"><label>Telephone</label><input data-field="Telephone Number_2" id="payorPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="###-###-####" maxlength="12"></div>
+<div class="field"><label>SSN/TIN</label><input data-field="Social Security NumberTIN_3" id="payorSSN" inputmode="numeric" autocomplete="off" placeholder="###-##-####" maxlength="11"></div>
+<div class="field"><label>Email</label><input id="payorEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com"></div>
+</div></section>
+
+<section class="section" data-key="beneficiary"><h1>Beneficiaries</h1>
+<h3>Primary Beneficiary</h3>
+<div class="grid">
+<div class="field full"><label>Name</label><input data-field="Primary Beneficiary"></div>
+<div class="field full address-wrap"><label>Street Address</label>
+<input id="primaryBeneficiaryStreet" autocomplete="street-address" placeholder="Start typing the street address">
+<div class="address-suggestions" id="primaryBeneficiaryAddressSuggestions"></div>
+</div>
+<div class="field"><label>City</label><input id="primaryBeneficiaryCity" autocomplete="address-level2"></div>
+<div class="field"><label>State</label><input id="primaryBeneficiaryState" autocomplete="address-level1"></div>
+<div class="field"><label>ZIP</label><input id="primaryBeneficiaryZip" autocomplete="postal-code" inputmode="numeric"></div>
+<div class="field"><label>Telephone</label><input data-field="Telephone" id="primaryBeneficiaryPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="###-###-####" maxlength="12"></div>
+<div class="field"><label>Relationship</label><input data-field="Relationship_3"></div>
+<div class="field"><label>Social Security Number</label><input data-field="Social Security Number" id="primaryBeneficiarySSN" inputmode="numeric" autocomplete="off" placeholder="###-##-####" maxlength="11"></div>
+</div>
+
+<div class="field" style="margin-top:14px"><label>Add a contingent beneficiary?</label>
+<select id="contingentChoice" onchange="toggleContingent(this.value)"><option>No</option><option>Yes</option></select></div>
+
+<div class="grid hidden" id="contingent" style="margin-top:14px">
+<div class="field full"><label>Name</label><input data-field="Contingent Beneficiary"></div>
+<div class="field full address-wrap"><label>Street Address</label>
+<input id="contingentBeneficiaryStreet" autocomplete="street-address" placeholder="Start typing the street address">
+<div class="address-suggestions" id="contingentBeneficiaryAddressSuggestions"></div>
+</div>
+<div class="field"><label>City</label><input id="contingentBeneficiaryCity" autocomplete="address-level2"></div>
+<div class="field"><label>State</label><input id="contingentBeneficiaryState" autocomplete="address-level1"></div>
+<div class="field"><label>ZIP</label><input id="contingentBeneficiaryZip" autocomplete="postal-code" inputmode="numeric"></div>
+<div class="field"><label>Telephone</label><input data-field="Telephone_2" id="contingentBeneficiaryPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="###-###-####" maxlength="12"></div>
+<div class="field"><label>Relationship</label><input data-field="Relationship_4"></div>
+<div class="field"><label>Social Security Number</label><input data-field="Social Security Number_2" id="contingentBeneficiarySSN" inputmode="numeric" autocomplete="off" placeholder="###-##-####" maxlength="11"></div>
+</div></section>
+
+<section class="section" data-key="replacement"><h1>Replacement</h1>
+<div class="question"><div class="qtext">1. Do you have an existing life insurance policy or annuity contract?</div><div class="yn">
+<label><input type="radio" name="rep1" value="yes" data-check="Check Box10" onchange="replacementChanged()"> Yes</label>
+<label><input type="radio" name="rep1" value="no" data-check="Check Box11" onchange="replacementChanged()"> No</label></div></div>
+
+<div class="question"><div class="qtext">2. If yes, will proposed insurance replace or change any existing life insurance policy or annuity contract?</div><div class="yn">
+<label><input type="radio" name="rep2" value="yes" data-check="Check Box12" onchange="replacementChanged()"> Yes</label>
+<label><input type="radio" name="rep2" value="no" data-check="Check Box13" onchange="replacementChanged()"> No</label></div></div>
+
+<div id="replacementTrigger" class="hidden">
+  <div class="replacement-alert">A Replacement Notice is required and has been triggered. The customer must be informed before continuing.</div>
+  <div class="field"><label>Have you informed the customer that the Replacement Notice is required?</label>
+    <select id="replacementAcknowledged" onchange="replacementAcknowledgementChanged()">
+      <option value="">Select Yes or No</option><option value="No">No</option><option value="Yes">Yes</option>
+    </select>
+  </div>
+</div>
+
+<div id="replacementFormArea" class="hidden">
+  <div class="notice"><strong>Replacement Notice - Page 1</strong><br>The complete original page is shown below for the agent and customer to review.</div>
+  <img class="form-preview" src="replacement-page-1.png" alt="Original Replacement Notice page 1">
+
+  <h2>Replacement Notice Questions</h2>
+  <div class="question"><div class="qtext">1. Are you considering discontinuing making premium payments, surrendering, forfeiting, assigning to the insurer, or otherwise terminating your existing policy or contract?</div>
+    <div class="yn"><label><input type="radio" name="noticeQ1" value="yes"> Yes</label><label><input type="radio" name="noticeQ1" value="no"> No</label></div>
+  </div>
+  <div class="question"><div class="qtext">2. Are you considering using funds from your existing policies or contracts to pay premiums due on the new policy or contract?</div>
+    <div class="yn"><label><input type="radio" name="noticeQ2" value="yes"> Yes</label><label><input type="radio" name="noticeQ2" value="no"> No</label></div>
+  </div>
+
+  <h3>Existing Policies or Contracts</h3>
+  <p class="sub">Complete the rows that apply.</p>
+  <div class="policy-row"><strong>Policy 1</strong><div class="grid">
+    <div class="field full"><label>Insurer Name and Address</label><input id="repInsCompany1"></div>
+    <div class="field"><label>Contract/Policy Number</label><input id="repPolicy1"></div>
+    <div class="field"><label>Insured/Annuitant</label><input id="repInsured1"></div>
+    <div class="field"><label>Use</label><select id="repUse1"><option></option><option>Replaced</option><option>Financing</option></select></div>
+  </div></div>
+  <div class="policy-row"><strong>Policy 2</strong><div class="grid">
+    <div class="field full"><label>Insurer Name and Address</label><input id="repInsCompany2"></div>
+    <div class="field"><label>Contract/Policy Number</label><input id="repPolicy2"></div>
+    <div class="field"><label>Insured/Annuitant</label><input id="repInsured2"></div>
+    <div class="field"><label>Use</label><select id="repUse2"><option></option><option>Replaced</option><option>Financing</option></select></div>
+  </div></div>
+  <div class="policy-row"><strong>Policy 3</strong><div class="grid">
+    <div class="field full"><label>Insurer Name and Address</label><input id="repInsCompany3"></div>
+    <div class="field"><label>Contract/Policy Number</label><input id="repPolicy3"></div>
+    <div class="field"><label>Insured/Annuitant</label><input id="repInsured3"></div>
+    <div class="field"><label>Use</label><select id="repUse3"><option></option><option>Replaced</option><option>Financing</option></select></div>
+  </div></div>
+  <div class="field full"><label>The existing policy or contract is being replaced because:</label><textarea id="repReason" rows="3"></textarea></div>
+
+  <div class="grid" style="margin-top:14px">
+    <div class="field"><label>Applicant's Printed Name</label><input id="replacementApplicantName"></div>
+    <div class="field"><label>Applicant Signature Date</label><input id="replacementApplicantDate" placeholder="mm/dd/yyyy"></div>
+    <div class="field"><label>Producer's Printed Name</label><input id="replacementAgentName"></div>
+    <div class="field"><label>Producer Signature Date</label><input id="replacementAgentDate" placeholder="mm/dd/yyyy"></div>
+  </div>
+
+  <div class="field" style="margin-top:14px"><label>Does the customer decline to have page 2 read aloud?</label>
+    <select id="declineReadAloud" onchange="readAloudChoiceChanged()">
+      <option value="">Select Yes or No</option><option value="No">No - Show page 2 to read aloud</option><option value="Yes">Yes - Customer initials are required</option>
+    </select>
+  </div>
+
+  <div id="replacementInitialNotice" class="signature-note hidden">Customer initials are required in the Signature Handling section because the customer declined to have page 2 read aloud.</div>
+
+  <div id="replacementPage2" class="hidden">
+    <div class="notice"><strong>Replacement Notice - Page 2</strong><br>Read this entire original page aloud to the customer.</div>
+    <img class="form-preview" src="replacement-page-2.png" alt="Original Replacement Notice page 2">
+  </div>
+</div>
+</section>
+
+<section class="section" data-key="physician"><h1>Physician</h1><div class="grid">
+<div class="field full"><label>Proposed Insured's Physician's Name</label><input data-field="Proposed Insureds Physicians Name"></div>
+<div class="field"><label>Phone Number</label><input data-field="Phone Number"></div>
+<div class="field full"><label>Address</label><input data-field="Address_3"></div>
+<div class="field"><label>City</label><input data-field="City_4"></div><div class="field"><label>State</label><input data-field="State_4"></div><div class="field"><label>ZIP</label><input data-field="Zip_4"></div>
+<div class="field full"><label>Date and reason last consulted</label><textarea data-field="Date and reason last consulted with your physician 1" rows="3"></textarea></div>
+</div></section>
+
+<section class="section" data-key="tobacco"><h1>Tobacco / Nicotine</h1>
+<p>Have you used tobacco and/or nicotine in any form within the past 2 years?</p><div class="yn">
+<label><input type="radio" name="tobacco" data-check="Check Box14"> Yes</label><label><input type="radio" name="tobacco" data-check="Check Box15"> No</label></div></section>
+
+<section class="section" data-key="medical"><h1>Medical Questions</h1><p class="sub">The Proposed Insured must answer every question.</p>
+<div class="question">
+  <div class="qtext"><strong>1.</strong> Any disorder of the thyroid or lymph node system or any other glands?</div>
+  <div class="yn">
+    <label><input type="radio" name="med1" value="yes" data-check="Check Box16" onchange="toggleMed(1,true)"> Yes</label>
+    <label><input type="radio" name="med1" value="no" data-check="Check Box17" onchange="toggleMed(1,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails1">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="1"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="1"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="1"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="1"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>2.</strong> Ulcers, colitis, or any disorder of the stomach, rectum, gallbladder, liver or intestines?</div>
+  <div class="yn">
+    <label><input type="radio" name="med2" value="yes" data-check="Check Box18" onchange="toggleMed(2,true)"> Yes</label>
+    <label><input type="radio" name="med2" value="no" data-check="Check Box19" onchange="toggleMed(2,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails2">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="2"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="2"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="2"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="2"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>3.</strong> Have you ever been diagnosed by a licensed medical professional as having AIDS, ARC, or tested positive for HIV?</div>
+  <div class="yn">
+    <label><input type="radio" name="med3" value="yes" data-check="Check Box20" onchange="toggleMed(3,true)"> Yes</label>
+    <label><input type="radio" name="med3" value="no" data-check="Check Box21" onchange="toggleMed(3,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails3">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="3"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="3"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="3"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="3"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>4.</strong> Angioplasty, stent implant, bypass surgery, heart valve surgery or pacemaker?</div>
+  <div class="yn">
+    <label><input type="radio" name="med4" value="yes" data-check="Check Box22" onchange="toggleMed(4,true)"> Yes</label>
+    <label><input type="radio" name="med4" value="no" data-check="Check Box23" onchange="toggleMed(4,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails4">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="4"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="4"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="4"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>5.</strong> Any type of tumors or cancers?</div>
+  <div class="yn">
+    <label><input type="radio" name="med5" value="yes" data-check="Check Box24" onchange="toggleMed(5,true)"> Yes</label>
+    <label><input type="radio" name="med5" value="no" data-check="Check Box25" onchange="toggleMed(5,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails5">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="5"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="5"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="5"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="5"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>6.</strong> Brain tumor, brain disorders, TIA (mini stroke) or strokes of any kind?</div>
+  <div class="yn">
+    <label><input type="radio" name="med6" value="yes" data-check="Check Box26" onchange="toggleMed(6,true)"> Yes</label>
+    <label><input type="radio" name="med6" value="no" data-check="Check Box27" onchange="toggleMed(6,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails6">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="6"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="6"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="6"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="6"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>7.</strong> Medical advice, treatment, recommended treatment or surgery, medication for Alzheimer's, Dementia, ALS, or an organ transplant?</div>
+  <div class="yn">
+    <label><input type="radio" name="med7" value="yes" data-check="Check Box28" onchange="toggleMed(7,true)"> Yes</label>
+    <label><input type="radio" name="med7" value="no" data-check="Check Box29" onchange="toggleMed(7,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails7">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="7"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="7"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="7"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="7"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>8.</strong> High blood pressure, heart disease, angina, heart attack, heart murmur, chest pain, rheumatic fever, enlarged heart, CHF, circulatory disorder, sepsis, or other heart condition?</div>
+  <div class="yn">
+    <label><input type="radio" name="med8" value="yes" data-check="Check Box30" onchange="toggleMed(8,true)"> Yes</label>
+    <label><input type="radio" name="med8" value="no" data-check="Check Box31" onchange="toggleMed(8,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails8">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="8"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="8"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="8"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="8"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>9.</strong> Lung disease, asthma, tuberculosis, pleurisy, shortness of breath, emphysema, COPD, or any other pulmonary/lung condition?</div>
+  <div class="yn">
+    <label><input type="radio" name="med9" value="yes" data-check="Check Box32" onchange="toggleMed(9,true)"> Yes</label>
+    <label><input type="radio" name="med9" value="no" data-check="Check Box33" onchange="toggleMed(9,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails9">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="9"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="9"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="9"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="9"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>10.</strong> Kidney disease or failure, dialysis, renal insufficiency, kidney stones, liver disease, hepatitis, cirrhosis, pancreatic disease or another organ disorder?</div>
+  <div class="yn">
+    <label><input type="radio" name="med10" value="yes" data-check="Check Box34" onchange="toggleMed(10,true)"> Yes</label>
+    <label><input type="radio" name="med10" value="no" data-check="Check Box35" onchange="toggleMed(10,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails10">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="10"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="10"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="10"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="10"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>11.</strong> Diabetes of any kind?</div>
+  <div class="yn">
+    <label><input type="radio" name="med11" value="yes" data-check="Check Box36" onchange="toggleMed(11,true)"> Yes</label>
+    <label><input type="radio" name="med11" value="no" data-check="Check Box37" onchange="toggleMed(11,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails11">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="11"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="11"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="11"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="11"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>12.</strong> Parkinson's disease, paralysis, multiple sclerosis, lupus, muscular dystrophy, epilepsy, seizures or another neurological disorder?</div>
+  <div class="yn">
+    <label><input type="radio" name="med12" value="yes" data-check="Check Box38" onchange="toggleMed(12,true)"> Yes</label>
+    <label><input type="radio" name="med12" value="no" data-check="Check Box39" onchange="toggleMed(12,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails12">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="12"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="12"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="12"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="12"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>13.</strong> Paranoia, schizophrenia, bipolar, depression, major depressive disorder involving suicide attempts/hospitalization, or another mental disorder?</div>
+  <div class="yn">
+    <label><input type="radio" name="med13" value="yes" data-check="Check Box40" onchange="toggleMed(13,true)"> Yes</label>
+    <label><input type="radio" name="med13" value="no" data-check="Check Box41" onchange="toggleMed(13,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails13">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="13"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="13"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="13"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="13"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>14.</strong> Advised to have tests, surgery, treatment, hospitalization, or do you have pending test results/evaluations?</div>
+  <div class="yn">
+    <label><input type="radio" name="med14" value="yes" data-check="Check Box42" onchange="toggleMed(14,true)"> Yes</label>
+    <label><input type="radio" name="med14" value="no" data-check="Check Box43" onchange="toggleMed(14,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails14">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="14"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="14"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="14"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="14"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>15.</strong> Treatment or counseling for abuse or excessive use of alcohol, non-prescribed drugs, prescribed drugs, narcotics or another habit-forming substance?</div>
+  <div class="yn">
+    <label><input type="radio" name="med15" value="yes" data-check="Check Box44" onchange="toggleMed(15,true)"> Yes</label>
+    <label><input type="radio" name="med15" value="no" data-check="Check Box45" onchange="toggleMed(15,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails15">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="15"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="15"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="15"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="15"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>16.</strong> Use of a medical appliance such as a wheelchair, walker, hospital bed, or oxygen?</div>
+  <div class="yn">
+    <label><input type="radio" name="med16" value="yes" data-check="Check Box46" onchange="toggleMed(16,true)"> Yes</label>
+    <label><input type="radio" name="med16" value="no" data-check="Check Box47" onchange="toggleMed(16,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails16">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="16"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="16"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="16"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="16"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>17.</strong> Life or health insurance rated, declined, modified, cancelled or renewal refused?</div>
+  <div class="yn">
+    <label><input type="radio" name="med17" value="yes" data-check="Check Box48" onchange="toggleMed(17,true)"> Yes</label>
+    <label><input type="radio" name="med17" value="no" data-check="Check Box49" onchange="toggleMed(17,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails17">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="17"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="17"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="17"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="17"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>18.</strong> Scuba/sky diving, hang-gliding, para-sailing, racing, rodeo, rock climbing, private piloting or flight training?</div>
+  <div class="yn">
+    <label><input type="radio" name="med18" value="yes" data-check="Check Box50" onchange="toggleMed(18,true)"> Yes</label>
+    <label><input type="radio" name="med18" value="no" data-check="Check Box51" onchange="toggleMed(18,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails18">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="18"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="18"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="18"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="18"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>19.</strong> Driver's license revoked/suspended or felony/misdemeanor conviction within the last 5 years?</div>
+  <div class="yn">
+    <label><input type="radio" name="med19" value="yes" data-check="Check Box52" onchange="toggleMed(19,true)"> Yes</label>
+    <label><input type="radio" name="med19" value="no" data-check="Check Box53" onchange="toggleMed(19,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails19">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="19"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="19"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="19"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="19"></div>
+    </div>
+  </div>
+</div>
+
+<div class="question">
+  <div class="qtext"><strong>20.</strong> Currently pregnant?</div>
+  <div class="yn">
+    <label><input type="radio" name="med20" value="yes" data-check="Check Box54" onchange="toggleMed(20,true)"> Yes</label>
+    <label><input type="radio" name="med20" value="no" data-check="Check Box55" onchange="toggleMed(20,false)"> No</label>
+  </div>
+  <div class="details hidden" id="medDetails20">
+    <div class="grid">
+      <div class="field"><label>Medical condition</label><input data-med-condition="20"></div>
+      <div class="field"><label>Medication(s), including oxygen</label><input data-med-medication="20"></div>
+      <div class="field"><label>Dosage</label><input data-med-dosage="20"></div>
+      <div class="field"><label>Duration (from/to)</label><input data-med-duration="20"></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section" data-key="details"><h1>Medical Details</h1><p class="sub">Yes answers are copied into the five detail rows on the PDF. Review and adjust as needed.</p>
+<div id="medicalRows"></div></section>
+
+<section class="section" data-key="authorization"><h1>Prescription Authorization <span class="signature-needed">Signatures required</span></h1><div class="notice warning"><strong>Required.</strong> Read the authorization on the official application and obtain the required signatures.</div>
+<div class="grid">
+<div class="field full"><label>Applicant's Name</label><input data-field="Applicants Name_2"></div>
+<div class="field"><label>Social Security Number</label><input data-field="Social Security Number_4"></div>
+<div class="field"><label>City</label><input data-field="City_5"></div><div class="field"><label>State</label><input data-field="State_5"></div><div class="field"><label>Date</label><input data-field="Date"></div>
+<div class="sigbox"><h3>Applicant Signature <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('auth-applicant','Prescription Authorization - Applicant')">Sign</button><div id="auth-applicant-status">Required</div></div>
+<div class="sigbox"><h3>Agent Signature <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('auth-agent','Prescription Authorization - Agent')">Sign</button><div id="auth-agent-status">Required</div></div>
+</div></section>
+
+<section class="section" data-key="coverage"><h1>Plan Amount and Payment Mode</h1>
+<div class="grid">
+<div class="field"><label>Face Amount</label><input data-field="Face Amount"></div>
+<div class="field"><label>Modal Premium</label><input data-field="Modal Premium"></div>
+<div class="field"><label>Requested Bill Date</label><input data-field="Requested Bill Date"></div>
+<div class="field"><label>Amount of premium paid with application</label><input data-field="first prem amt"></div>
+</div>
+<h3 style="margin-top:18px">Riders</h3>
+<div class="grid">
+<div class="field"><label><input type="checkbox" data-check="Check Box1"> ADB requested</label><input data-field="ADB amt" placeholder="ADB face amount"></div>
+<div class="field"><label><input type="checkbox" data-check="Check Box2"> Child Rider requested</label><input data-field="child rider amt" placeholder="Child Rider face amount"></div>
+</div>
+<h3 style="margin-top:18px">Premium Mode</h3>
+<div class="grid">
+<label><input type="radio" name="mode" data-check="Check Box3"> EFT</label><label><input type="radio" name="mode" data-check="Check Box4"> Direct Monthly Bill</label>
+<label><input type="radio" name="mode" data-check="Check Box5"> Debit/Credit Card</label><label><input type="radio" name="mode" data-check="Check Box6"> Monthly</label>
+<label><input type="radio" name="mode" data-check="Check Box7"> Quarterly</label><label><input type="radio" name="mode" data-check="Check Box8"> Semi-Annual</label>
+<label><input type="radio" name="mode" data-check="Check Box9"> Annual</label>
+</div>
+<div class="notice"><strong>Checks must be made payable to Security National Life Insurance Company.</strong></div></section>
+
+<section class="section" data-key="payment"><h1>Payment Information and Conditional Receipt <span class="signature-needed">Signature(s) may be required</span></h1><div class="signature-note">The authorized account holder signs when applicable, and the agent signs the Conditional Receipt.</div>
+<div class="grid">
+<div class="field full"><label>Payor Name</label><input data-field="Payor Name" id="paymentPayor"></div>
+<div class="field"><label>Phone</label><input data-field="Phone"></div><div class="field full"><label>Payor Address</label><input data-field="Payor Address"></div>
+<div class="field"><label>Name of Bank</label><input data-field="Name of Bank"></div><div class="field"><label>Address of Bank</label><input data-field="Address of Bank"></div>
+<div class="field"><label>Checking Account</label><input data-field="Checking Account"></div><div class="field"><label>Savings Account</label><input data-field="Savings Account"></div>
+<div class="field"><label>Nine Digit Bank Transit</label><input data-field="Nine Digit Bank Transit"></div>
+<div class="field"><label>Credit/Debit Card #</label><input data-field="Credit/Debit Card #"></div><div class="field"><label>Expiration</label><input data-field="Exp"></div><div class="field"><label>CVV</label><input data-field="CVV"></div>
+<div class="field full"><label>Conditional Receipt - Received From (Payor)</label><input data-field="Received from" id="receivedFrom"></div>
+<div class="field"><label>Date</label><input data-field="date"></div><div class="field"><label>Amount of Premium</label><input data-field="first prem amt"></div>
+<div class="field"><label>Agent Name</label><input data-field="Agents Name Please Print"></div>
+</div></section>
+
+<section class="section" data-key="agentstatement"><h1>Agent's Statement <span class="signature-needed">Signature required</span></h1>
+<div class="signature-note">The agent must sign this statement. The signature is collected in Signature Handling for in-person signing, or requested by the company when email signatures are used.</div>
+<p><strong>I certify that to the best of my knowledge:</strong></p>
+<ol style="line-height:1.55">
+<li>I correctly asked all the Medical Questions in this application and correctly recorded all the answers given; and</li>
+<li>All answers given in this application are true and complete; and</li>
+<li>The signature of the Proposed Insured(s) and/or the Applicant/Policyowner (Parent/Legal Guardian) is what they are represented to be and were signed in my presence; and</li>
+<li>I know of no factor affecting the insurability of the Proposed Insured(s) except as stated in this application; and</li>
+<li>This insurance <label><input type="radio" name="will" data-check="Check Box56"> WILL</label> <label><input type="radio" name="will" data-check="Check Box57"> WILL NOT</label> change or replace any existing insurance policy or annuity contract.</li>
+</ol>
+<div class="notice warning">If WILL is selected, complete all required replacement forms.</div>
+</section>
+
+<section class="section" data-key="signatures"><h1>Signature Handling <span class="signature-needed">Complete required signatures</span></h1>
+<p>How will signatures be completed?</p><div class="choice-row">
+<button class="choice selected" onclick="signMode('inperson',this)">Sign in person on this device</button>
+<button class="choice" onclick="signMode('email',this)">Company obtains signatures by email</button></div>
+<div id="directSigs" style="margin-top:16px"><div class="grid">
+<div class="sigbox"><h3>Application - Proposed Insured <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('app-insured','Application - Proposed Insured')">Sign</button><div id="app-insured-status">Required</div></div>
+<div class="sigbox"><h3>Application - Owner <span class="signature-needed">When applicable</span></h3><button class="btn primary" onclick="openSig('app-owner','Application - Owner')">Sign</button><div id="app-owner-status">When required</div></div>
+<div class="sigbox"><h3>Application - Agent <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('app-agent','Application - Agent')">Sign</button><div id="app-agent-status">Required</div></div>
+<div class="sigbox"><h3>Authorized Account Holder <span class="signature-needed">When applicable</span></h3><button class="btn primary" onclick="openSig('account-holder','Authorized Account Holder')">Sign</button><div id="account-holder-status">When applicable</div></div>
+<div class="sigbox"><h3>Conditional Receipt - Agent <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('receipt-agent','Conditional Receipt - Agent')">Sign</button><div id="receipt-agent-status">Required</div></div>
+<div class="sigbox hidden" id="replacementApplicantSigCard"><h3>Replacement Notice - Applicant <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('replacement-applicant','Replacement Notice - Applicant')">Sign</button><div id="replacement-applicant-status">Required</div></div>
+<div class="sigbox hidden" id="replacementAgentSigCard"><h3>Replacement Notice - Producer <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('replacement-agent','Replacement Notice - Producer')">Sign</button><div id="replacement-agent-status">Required</div></div>
+<div class="sigbox hidden" id="replacementInitialCard"><h3>Replacement Notice - Applicant Initials <span class="signature-needed">Required when notice is not read aloud</span></h3><button class="btn primary" onclick="openSig('replacement-initial','Replacement Notice - Applicant Initials')">Initial</button><div id="replacement-initial-status">Required</div></div>
+</div></div>
+<div id="emailFields" class="hidden" style="margin-top:16px"><div class="notice">When this form is complete, the packet is ready for upload. The company will request signatures and complete the remaining process.</div>
+<div class="grid">
+<div class="field"><label>Insured Name</label><input id="emailInsuredName"></div><div class="field"><label>Insured Email</label><input id="emailInsuredEmail"></div>
+<div class="field"><label>Payor Name</label><input id="emailPayorName"></div><div class="field"><label>Payor Email</label><input id="emailPayorEmail"></div>
+<div class="field"><label>Owner Name</label><input id="emailOwnerName"></div><div class="field"><label>Owner Email</label><input id="emailOwnerEmail"></div>
+<div class="field"><label>Agent Name</label><input id="emailAgentName"></div><div class="field"><label>Agent Email</label><input id="emailAgentEmail"></div>
+</div></div></section>
+
+<section class="section" data-key="review"><h1>Review and Generate PDF</h1><div class="notice">Click Generate PDF. Your answers will be placed into the official iCare PDF. If signatures are by email, the Email Collection Form will be page 1.</div>
+<button class="btn success" onclick="generatePdf()">Generate and Download Official PDF</button></section>
+
+<div class="nav"><button class="btn secondary" id="back" onclick="move(-1)" disabled>Back</button><button class="btn primary" id="next" onclick="move(1)">Continue</button></div>
+</main>
+
+<div class="modalBack" id="sigModal"><div class="modal"><h2 id="sigTitle">Signature</h2><p>Sign in the large box. It will shrink to fit the official form.</p>
+<canvas id="sigCanvas" width="1400" height="480"></canvas><div class="modalActions"><button class="btn secondary" onclick="clearSig()">Clear</button><div><button class="btn secondary" onclick="closeSig()">Cancel</button> <button class="btn primary" onclick="saveSig()">Use Signature</button></div></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+const sections=['agent','insured','owner','payor','beneficiary','replacement','physician','tobacco','medical','details','authorization','coverage','payment','agentstatement','signatures','review'];
+const titles=['Agent Information','Proposed Insured','Owner','Payor','Beneficiaries','Replacement','Physician','Tobacco/Nicotine','Medical Questions','Medical Details','Prescription Authorization','Plan Amount','Payment Information','Agent Statement','Signatures','Review'];
+let current=0, emailMode=false, activeSig=null, drawing=false;
+const signatures={};
+const signaturePlacement={
+ 'auth-applicant':{page:4,left:8.1,top:43.7,width:52.6,height:4.2},
+ 'auth-agent':{page:4,left:8.1,top:52.0,width:37,height:4.1},
+ 'app-insured':{page:4,left:8.1,top:43.7,width:52.6,height:4.2},
+ 'app-owner':{page:4,left:8.1,top:48.0,width:52.6,height:4.2},
+ 'app-agent':{page:4,left:17.6,top:71.9,width:33,height:4},
+ 'account-holder':{page:5,left:31.5,top:61.5,width:56.5,height:4.2},
+ 'receipt-agent':{page:5,left:8.5,top:90.8,width:37,height:4}
+};
+
+function digitsOnly(value){return String(value||'').replace(/\D/g,'');}
+function formatPhone(value){
+  const d=digitsOnly(value).slice(0,10);
+  if(d.length<=3)return d;
+  if(d.length<=6)return d.slice(0,3)+'-'+d.slice(3);
+  return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);
+}
+function formatSSN(value){
+  const d=digitsOnly(value).slice(0,9);
+  if(d.length<=3)return d;
+  if(d.length<=5)return d.slice(0,3)+'-'+d.slice(3);
+  return d.slice(0,3)+'-'+d.slice(3,5)+'-'+d.slice(5);
+}
+function parseBirthdate(value){
+  const cleaned=String(value||'').trim().replace(/[.\-]/g,'/');
+  const parts=cleaned.split('/');
+  if(parts.length!==3)return null;
+  let month=Number(parts[0]),day=Number(parts[1]),year=Number(parts[2]);
+  if(year<100)year+=year>=30?1900:2000;
+  if(year<1900||year>new Date().getFullYear())return null;
+  const date=new Date(year,month-1,day);
+  if(date.getFullYear()!==year||date.getMonth()!==month-1||date.getDate()!==day)return null;
+  return date;
+}
+function formatDateMMDDYYYY(date){
+  const mm=String(date.getMonth()+1).padStart(2,'0');
+  const dd=String(date.getDate()).padStart(2,'0');
+  return mm+'/'+dd+'/'+date.getFullYear();
+}
+function calculateAge(date){
+  const today=new Date();
+  let age=today.getFullYear()-date.getFullYear();
+  const beforeBirthday=today.getMonth()<date.getMonth()||(today.getMonth()===date.getMonth()&&today.getDate()<date.getDate());
+  if(beforeBirthday)age--;
+  return Math.max(0,age);
+}
+function updateBirthdateAndAge(){
+  const input=document.getElementById('birthdateText');
+  const age=document.getElementById('calculatedAge');
+  const raw=input.value.trim();
+  if(!raw){
+    input.classList.remove('field-error');
+    age.value='';
+    return;
+  }
+  if(raw.length<10){
+    input.classList.remove('field-error');
+    age.value='';
+    return;
+  }
+  const date=parseBirthdate(raw);
+  if(!date || date>new Date()){
+    input.classList.add('field-error');
+    age.value='';
+    return;
+  }
+  input.classList.remove('field-error');
+  input.value=formatDateMMDDYYYY(date);
+  age.value=calculateAge(date);
+}
+
+function validateEmailElement(el){
+  if(!el||!el.value){if(el)el.classList.remove('field-error');return true;}
+  const valid=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value);
+  el.classList.toggle('field-error',!valid);
+  return valid;
+}
+function validateEmailField(){return validateEmailElement(document.getElementById('insuredEmail'));}
+
+/*
+ Address autocomplete:
+ - Browser autofill works immediately through autocomplete attributes.
+ - Google Places can be enabled later by setting window.GOOGLE_MAPS_API_KEY.
+ - Without a key, the form remains fully usable with manual entry.
+*/
+function attachGoogleAddressAutocomplete(prefix){
+  if(!window.google||!google.maps||!google.maps.places)return;
+  const input=document.getElementById(prefix+'Street');
+  if(!input)return;
+  const ac=new google.maps.places.Autocomplete(input,{
+    types:['address'],
+    componentRestrictions:{country:'us'},
+    fields:['address_components','formatted_address']
+  });
+  ac.addListener('place_changed',()=>{
+    const place=ac.getPlace();
+    const comps=place.address_components||[];
+    const get=(type,short=false)=>{
+      const c=comps.find(x=>x.types.includes(type));
+      return c?(short?c.short_name:c.long_name):'';
+    };
+    const street=[get('street_number'),get('route')].filter(Boolean).join(' ');
+    if(street)input.value=street;
+    const city=document.getElementById(prefix+'City');
+    const state=document.getElementById(prefix+'State');
+    const zip=document.getElementById(prefix+'Zip');
+    if(city)city.value=get('locality')||get('postal_town')||get('sublocality');
+    if(state)state.value=get('administrative_area_level_1',true);
+    if(zip)zip.value=get('postal_code');
+    saveDraft(false);
+  });
+}
+function initGoogleAddressAutocomplete(){
+  ['insured','owner','payor','primaryBeneficiary','contingentBeneficiary'].forEach(attachGoogleAddressAutocomplete);
+}
+function loadGoogleMapsIfConfigured(){
+  const key=window.GOOGLE_MAPS_API_KEY||'';
+  if(!key)return;
+  const s=document.createElement('script');
+  s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(key)+'&libraries=places&callback=initGoogleAddressAutocomplete';
+  s.async=true;s.defer=true;document.head.appendChild(s);
+}
+
+
+function clearCurrentSection(){
+  const active=document.querySelector('.section.active');
+  if(!active)return;
+  const title=titles[current]||'this section';
+  if(!confirm('Clear all information entered in '+title+'?'))return;
+
+  active.querySelectorAll('input,select,textarea').forEach(el=>{
+    if(el.type==='radio'||el.type==='checkbox'){
+      el.checked=false;
+    }else if(el.tagName==='SELECT'){
+      el.selectedIndex=0;
+    }else if(el.readOnly){
+      el.value='';
+    }else{
+      el.value='';
+    }
+    el.classList.remove('field-error');
+  });
+
+  // Reset conditional areas within the cleared section.
+  active.querySelectorAll('.details').forEach(el=>el.classList.add('hidden'));
+  if(active.dataset.key==='owner'){
+    document.getElementById('ownerFields').classList.add('hidden');
+    active.querySelectorAll('.choice').forEach((b,i)=>b.classList.toggle('selected',i===0));
+  }
+  if(active.dataset.key==='payor'){
+    document.getElementById('payorFields').classList.add('hidden');
+    active.querySelectorAll('.choice').forEach((b,i)=>b.classList.toggle('selected',i===0));
+  }
+  if(active.dataset.key==='beneficiary'){
+    document.getElementById('contingentChoice').value='No';
+    clearContingentBeneficiary();
+    document.getElementById('contingent').classList.add('hidden');
+  }
+  if(active.dataset.key==='signatures'){
+    emailMode=false;
+    document.getElementById('directSigs').classList.remove('hidden');
+    document.getElementById('emailFields').classList.add('hidden');
+    active.querySelectorAll('.choice').forEach((b,i)=>b.classList.toggle('selected',i===0));
+  }
+  if(active.dataset.key==='insured'){
+    document.getElementById('calculatedAge').value='';
+  }
+
+  // Remove saved signature data associated with this section.
+  if(active.dataset.key==='authorization'){
+    delete signatures['auth-applicant'];
+    delete signatures['auth-agent'];
+    ['auth-applicant-status','auth-agent-status'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.textContent='Required';el.className='';}
+    });
+  }
+  if(active.dataset.key==='signatures'){
+    ['app-insured','app-owner','app-agent','account-holder','receipt-agent','replacement-applicant','replacement-agent','replacement-initial'].forEach(id=>delete signatures[id]);
+    ['app-insured-status','app-owner-status','app-agent-status','account-holder-status','receipt-agent-status'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){
+        el.className='';
+        el.textContent=id==='app-owner-status'||id==='account-holder-status'?'When required':'Required';
+      }
+    });
+  }
+
+  syncCopies();
+  saveDraft(false);
+  status(title+' cleared.');
+}
+
+
+function clearContingentBeneficiary(){
+  const container=document.getElementById('contingent');
+  if(!container)return;
+  container.querySelectorAll('input,select,textarea').forEach(el=>{
+    if(el.type==='radio'||el.type==='checkbox')el.checked=false;
+    else if(el.tagName==='SELECT')el.selectedIndex=0;
+    else el.value='';
+    el.classList.remove('field-error');
+  });
+}
+function toggleContingent(value){
+  const show=value==='Yes';
+  const container=document.getElementById('contingent');
+  container.classList.toggle('hidden',!show);
+  if(!show){
+    clearContingentBeneficiary();
+    saveDraft(false);
+  }
+}
+function beneficiaryAddressLines(prefix){
+  const street=(document.getElementById(prefix+'Street')?.value||'').trim();
+  const city=(document.getElementById(prefix+'City')?.value||'').trim();
+  const state=(document.getElementById(prefix+'State')?.value||'').trim();
+  const zip=(document.getElementById(prefix+'Zip')?.value||'').trim();
+  const cityState=[city,state].filter(Boolean).join(', ');
+  const line2=[cityState,zip].filter(Boolean).join(' ');
+  return {line1:street,line2};
+}
+
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open')}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')}
+function buildDrawer(){const w=document.getElementById('drawerItems');sections.forEach((s,i)=>{const b=document.createElement('button');b.className='item';b.textContent=titles[i];b.onclick=()=>{current=i;render();closeDrawer()};w.appendChild(b)})}
+function render(){document.querySelectorAll('.section').forEach((s,i)=>s.classList.toggle('active',i===current));document.querySelectorAll('.drawer .item').forEach((b,i)=>{b.classList.toggle('active',i===current);b.classList.toggle('done',i<current)});document.getElementById('back').disabled=current===0;document.getElementById('next').style.display=current===sections.length-1?'none':'inline-block';document.getElementById('progressBar').style.width=((current+1)/sections.length*100)+'%';window.scrollTo(0,0);if(sections[current]==='details')buildMedicalRows();}
+function move(d){current=Math.max(0,Math.min(sections.length-1,current+d));render()}
+function other(type,show,el){el.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');document.getElementById(type+'Fields').classList.toggle('hidden',!show)}
+function toggleMed(i,yes){document.getElementById('medDetails'+i).classList.toggle('hidden',!yes)}
+function buildMedicalRows(){const yes=[];for(let i=1;i<=20;i++){const r=document.querySelector(`input[name="med${i}"]:checked`);if(r&&r.value==='yes')yes.push(i)}const wrap=document.getElementById('medicalRows');wrap.innerHTML='';if(!yes.length){wrap.innerHTML='<div class="notice">No medical detail rows are needed because all medical questions were answered No.</div>';return}yes.slice(0,5).forEach((q,row)=>{const div=document.createElement('div');div.className='grid';div.style.marginBottom='14px';div.innerHTML=`<div class="field"><label>Question #</label><input data-field="Medical Question Row${row+1}" value="${q}"></div><div class="field"><label>Medical condition</label><input data-field="Medical ConditionsRow${row+1}" value="${document.querySelector(`[data-med-condition="${q}"]`).value}"></div><div class="field"><label>Medication(s)</label><input data-field="Medications including oxygenRow${row+1}" value="${document.querySelector(`[data-med-medication="${q}"]`).value}"></div><div class="field"><label>Dosage</label><input data-field="DosageRow${row+1}" value="${document.querySelector(`[data-med-dosage="${q}"]`).value}"></div><div class="field"><label>Duration</label><input data-field="Duration fromtoRow${row+1}" value="${document.querySelector(`[data-med-duration="${q}"]`).value}"></div>`;wrap.appendChild(div)});}
+
+function radioValue(name){
+  return document.querySelector(`input[name="${name}"]:checked`)?.value||'';
+}
+function replacementIsTriggered(){
+  return radioValue('rep2')==='yes';
+}
+function replacementChanged(){
+  const triggered=replacementIsTriggered();
+  document.getElementById('replacementTrigger').classList.toggle('hidden',!triggered);
+  if(!triggered){
+    document.getElementById('replacementAcknowledged').value='';
+    document.getElementById('replacementFormArea').classList.add('hidden');
+    document.getElementById('replacementApplicantSigCard').classList.add('hidden');
+    document.getElementById('replacementAgentSigCard').classList.add('hidden');
+    document.getElementById('replacementInitialCard').classList.add('hidden');
+  }
+  saveDraft(false);
+}
+function replacementAcknowledgementChanged(){
+  const show=replacementIsTriggered()&&document.getElementById('replacementAcknowledged').value==='Yes';
+  document.getElementById('replacementFormArea').classList.toggle('hidden',!show);
+  document.getElementById('replacementApplicantSigCard').classList.toggle('hidden',!show);
+  document.getElementById('replacementAgentSigCard').classList.toggle('hidden',!show);
+  if(show){
+    document.getElementById('replacementApplicantName').value=document.getElementById('insuredName').value;
+    document.getElementById('replacementAgentName').value=document.querySelector('[data-field="Agents Printed Name"]').value;
+  }
+  readAloudChoiceChanged();
+  saveDraft(false);
+}
+function readAloudChoiceChanged(){
+  const decline=document.getElementById('declineReadAloud')?.value==='Yes';
+  const read=document.getElementById('declineReadAloud')?.value==='No';
+  const active=replacementIsTriggered()&&document.getElementById('replacementAcknowledged').value==='Yes';
+  document.getElementById('replacementInitialNotice').classList.toggle('hidden',!(active&&decline));
+  document.getElementById('replacementInitialCard').classList.toggle('hidden',!(active&&decline));
+  document.getElementById('replacementPage2').classList.toggle('hidden',!(active&&read));
+  saveDraft(false);
+}
+
+function signMode(mode,el){emailMode=mode==='email';el.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');document.getElementById('directSigs').classList.toggle('hidden',emailMode);document.getElementById('emailFields').classList.toggle('hidden',!emailMode);syncEmailFields()}
+function syncEmailFields(){const insured=document.getElementById('insuredName').value;const payor=document.getElementById('payorName').value||insured;const owner=document.getElementById('ownerName').value||insured;document.getElementById('emailInsuredName').value=insured;document.getElementById('emailInsuredEmail').value=document.getElementById('insuredEmail').value;document.getElementById('emailPayorName').value=payor;document.getElementById('emailPayorEmail').value=document.getElementById('payorEmail').value||document.getElementById('insuredEmail').value;document.getElementById('emailOwnerName').value=owner;document.getElementById('emailOwnerEmail').value=document.getElementById('ownerEmail').value||document.getElementById('insuredEmail').value;document.getElementById('emailAgentName').value=document.querySelector('[data-field="Agents Printed Name"]').value;document.getElementById('emailAgentEmail').value=document.getElementById('agentEmail').value;}
+function syncCopies(){document.querySelector('[data-field="Applicants Name_2"]').value=document.getElementById('insuredName').value;document.querySelector('[data-field="Social Security Number_4"]').value=document.getElementById('insuredSSN').value;const payor=document.getElementById('payorName').value||document.getElementById('insuredName').value;document.getElementById('paymentPayor').value=payor;document.getElementById('receivedFrom').value=payor;}
+function status(msg){document.getElementById('status').textContent=msg;setTimeout(()=>document.getElementById('status').textContent='',2500)}
+function getState(){const vals={};document.querySelectorAll('input,select,textarea').forEach((el,i)=>{if(el.type==='radio'||el.type==='checkbox')vals[i]=el.checked;else vals[i]=el.value});return{current,emailMode,vals,signatures}}
+function saveDraft(show=false){localStorage.setItem('snl-icare-simple-final',JSON.stringify(getState()));if(show)status('Draft saved on this device.')}
+function loadDraft(){try{const s=JSON.parse(localStorage.getItem('snl-icare-simple-final')||'null');if(!s)return;document.querySelectorAll('input,select,textarea').forEach((el,i)=>{if(s.vals[i]===undefined)return;if(el.type==='radio'||el.type==='checkbox')el.checked=s.vals[i];else el.value=s.vals[i]});Object.assign(signatures,s.signatures||{});current=s.current||0;emailMode=!!s.emailMode;render()}catch(e){console.warn(e)}}
+document.addEventListener('input',()=>{syncCopies();saveDraft(false)});document.addEventListener('change',()=>{syncCopies();saveDraft(false)});
+function canvasPoint(e){const c=document.getElementById('sigCanvas'),r=c.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return{x:(p.clientX-r.left)*(c.width/r.width),y:(p.clientY-r.top)*(c.height/r.height)}}
+function startDraw(e){drawing=true;const p=canvasPoint(e),ctx=sigCanvas.getContext('2d');ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault()}
+function moveDraw(e){if(!drawing)return;const p=canvasPoint(e),ctx=sigCanvas.getContext('2d');ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault()}
+function stopDraw(e){drawing=false;if(e)e.preventDefault()}
+function openSig(id,title){activeSig=id;document.getElementById('sigTitle').textContent=title;clearSig();document.getElementById('sigModal').classList.add('open')}
+function closeSig(){document.getElementById('sigModal').classList.remove('open');activeSig=null}
+function clearSig(){sigCanvas.getContext('2d').clearRect(0,0,sigCanvas.width,sigCanvas.height)}
+function cropCanvas(src){const ctx=src.getContext('2d'),im=ctx.getImageData(0,0,src.width,src.height),d=im.data;let minX=src.width,minY=src.height,maxX=-1,maxY=-1;for(let y=0;y<src.height;y++)for(let x=0;x<src.width;x++)if(d[(y*src.width+x)*4+3]>8){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y)}if(maxX<0)return null;const p=20;minX=Math.max(0,minX-p);minY=Math.max(0,minY-p);maxX=Math.min(src.width-1,maxX+p);maxY=Math.min(src.height-1,maxY+p);const o=document.createElement('canvas');o.width=maxX-minX+1;o.height=maxY-minY+1;o.getContext('2d').drawImage(src,minX,minY,o.width,o.height,0,0,o.width,o.height);return o}
+function saveSig(){const c=cropCanvas(sigCanvas);if(!c){alert('Please add a signature first.');return}signatures[activeSig]=c.toDataURL('image/png');const st=document.getElementById(activeSig+'-status');if(st){st.textContent='Signature captured';st.className='signed'}saveDraft(false);closeSig()}
+
+async function drawSignatureInBox(pdf,pageIndex,dataUrl,rect){
+  if(!dataUrl)return;
+  const page=pdf.getPages()[pageIndex];
+  const png=await pdf.embedPng(dataUrl);
+  const maxW=rect[2]-rect[0],maxH=rect[3]-rect[1];
+  const scale=Math.min(maxW/png.width,maxH/png.height);
+  const w=png.width*scale,h=png.height*scale;
+  page.drawImage(png,{x:rect[0]+(maxW-w)/2,y:rect[1]+(maxH-h)/2,width:w,height:h});
+}
+function drawCheck(page,x,y){
+  page.drawText('X',{x:x,y:y,size:9,color:PDFLib.rgb(0,0,0)});
+}
+async function buildReplacementPdf(){
+  if(!replacementIsTriggered()||document.getElementById('replacementAcknowledged').value!=='Yes')return null;
+  const bytes=await fetch('HS Replacement_Form-312-L.pdf').then(r=>r.arrayBuffer());
+  const repPdf=await PDFLib.PDFDocument.load(bytes);
+  const repForm=repPdf.getForm();
+  const setText=(name,value)=>{if(!value)return;try{repForm.getTextField(name).setText(String(value))}catch(e){console.warn('Replacement field',name,e)}};
+  setText('ApplicantName',document.getElementById('replacementApplicantName').value);
+  setText('ApplicantSigDate',document.getElementById('replacementApplicantDate').value);
+  setText('AgentNameNumber',document.getElementById('replacementAgentName').value);
+  setText('AgentSigDate',document.getElementById('replacementAgentDate').value);
+  setText('ReplaceReason',document.getElementById('repReason').value);
+  for(let i=1;i<=3;i++){
+    setText('InsCompany'+i,document.getElementById('repInsCompany'+i).value);
+    setText('PolicyorContract'+i,document.getElementById('repPolicy'+i).value);
+    setText('Insured'+i,document.getElementById('repInsured'+i).value);
+  }
+  try{repForm.updateFieldAppearances();repForm.flatten()}catch(e){console.warn('Replacement flatten',e)}
+  const page=repPdf.getPages()[0];
+  const q1=radioValue('noticeQ1'),q2=radioValue('noticeQ2');
+  if(q1==='yes')drawCheck(page,468,457); if(q1==='no')drawCheck(page,505,457);
+  if(q2==='yes')drawCheck(page,469,429); if(q2==='no')drawCheck(page,506,429);
+  const uses=[
+    document.getElementById('repUse1').value,
+    document.getElementById('repUse2').value,
+    document.getElementById('repUse3').value
+  ];
+  const coords=[
+    {replaced:[514,353],financing:[514,340]},
+    {replaced:[514,319],financing:[514,306]},
+    {replaced:[514,285],financing:[514,272]}
+  ];
+  uses.forEach((use,i)=>{
+    if(use==='Replaced')drawCheck(page,...coords[i].replaced);
+    if(use==='Financing')drawCheck(page,...coords[i].financing);
+  });
+  if(!emailMode){
+    await drawSignatureInBox(repPdf,0,signatures['replacement-applicant'],[55.7,116.4,245,141.6]);
+    await drawSignatureInBox(repPdf,0,signatures['replacement-agent'],[59.4,79.9,248.7,105.1]);
+    if(document.getElementById('declineReadAloud').value==='Yes'){
+      await drawSignatureInBox(repPdf,0,signatures['replacement-initial'],[205.7,46.7,263.6,71.9]);
+    }
+  }
+  return repPdf;
+}
+
+async function generatePdf(){syncCopies();syncEmailFields();buildMedicalRows();const btns=document.querySelectorAll('button');btns.forEach(b=>b.disabled=true);status('Creating official PDF...');try{const bytes=await fetch('SNL_iCare-DocuSign.pdf').then(r=>r.arrayBuffer());const pdf=await PDFLib.PDFDocument.load(bytes);const form=pdf.getForm();
+const values={};document.querySelectorAll('[data-field]').forEach(el=>{if(el.value)values[el.dataset.field]=el.value});
+
+const primaryAddress=beneficiaryAddressLines('primaryBeneficiary');
+if(primaryAddress.line1)values['Address 1']=primaryAddress.line1;
+if(primaryAddress.line2)values['Address 2']=primaryAddress.line2;
+
+const contingentSelected=document.getElementById('contingentChoice').value==='Yes';
+if(contingentSelected){
+  const contingentAddress=beneficiaryAddressLines('contingentBeneficiary');
+  if(contingentAddress.line1)values['Address 1_2']=contingentAddress.line1;
+  if(contingentAddress.line2)values['Address 2_2']=contingentAddress.line2;
+}else{
+  delete values['Contingent Beneficiary'];
+  delete values['Telephone_2'];
+  delete values['Relationship_4'];
+  delete values['Social Security Number_2'];
+  delete values['Address 1_2'];
+  delete values['Address 2_2'];
+}
+const birthDate=parseBirthdate(document.getElementById('birthdateText').value);
+if(birthDate){
+  values['Birthdate']=formatDateMMDDYYYY(birthDate);
+  values['Age']=String(calculateAge(birthDate));
+}
+if(!validateEmailField()||
+   !validateEmailElement(document.getElementById('ownerEmail'))||
+   !validateEmailElement(document.getElementById('payorEmail'))){
+  alert('Please enter valid email addresses before generating the PDF.');
+  throw new Error('Invalid email');
+}
+if(emailMode){values["Email Form Insured's Name"]=document.getElementById('emailInsuredName').value;values["Email Form Insured's Email"]=document.getElementById('emailInsuredEmail').value;values["Email Form Payor's Name"]=document.getElementById('emailPayorName').value;values["Email Form Payor's Email"]=document.getElementById('emailPayorEmail').value;values["Email Form Owner's Name"]=document.getElementById('emailOwnerName').value;values["Email Form Owner's Email"]=document.getElementById('emailOwnerEmail').value;values["Email Form Agent's Name"]=document.getElementById('emailAgentName').value;values["Email Form Agent's Email"]=document.getElementById('emailAgentEmail').value}
+for(const [name,value] of Object.entries(values)){try{form.getTextField(name).setText(String(value))}catch(e){console.warn('Text field',name,e)}}
+document.querySelectorAll('[data-check]').forEach(el=>{try{const cb=form.getCheckBox(el.dataset.check);if(el.checked)cb.check();else cb.uncheck()}catch(e){console.warn('Checkbox',el.dataset.check,e)}});
+try{form.updateFieldAppearances();form.flatten()}catch(e){console.warn(e)}
+if(!emailMode){for(const [id,data] of Object.entries(signatures)){const p=signaturePlacement[id];if(!p||!data)continue;const page=pdf.getPages()[p.page-1],png=await pdf.embedPng(data),pw=page.getWidth(),ph=page.getHeight(),maxW=pw*p.width/100,maxH=ph*p.height/100,scale=Math.min(maxW/png.width,maxH/png.height),w=png.width*scale,h=png.height*scale;page.drawImage(png,{x:pw*p.left/100+(maxW-w)/2,y:ph*(1-p.top/100-p.height/100)+(maxH-h)/2,width:w,height:h})}}
+let output=pdf;
+if(!emailMode){
+  output=await PDFLib.PDFDocument.create();
+  const pages=await output.copyPages(pdf,[1,2,3,4]);
+  pages.forEach(p=>output.addPage(p));
+}
+const replacementPdf=await buildReplacementPdf();
+if(replacementPdf){
+  const repPages=await output.copyPages(replacementPdf,[0,1]);
+  repPages.forEach(p=>output.addPage(p));
+}
+const out=await output.save();const blob=new Blob([out],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=emailMode?'SNL_iCare_DocuSign_Ready.pdf':'SNL_iCare_Completed.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Completed PDF downloaded.')}catch(e){console.error(e);alert('The PDF could not be created. Please try again.')}finally{btns.forEach(b=>b.disabled=false)}}
+const birthText=document.getElementById('birthdateText');
+birthText.addEventListener('input',()=>{
+  let d=digitsOnly(birthText.value).slice(0,8);
+  if(d.length>4)d=d.slice(0,2)+'/'+d.slice(2,4)+'/'+d.slice(4);
+  else if(d.length>2)d=d.slice(0,2)+'/'+d.slice(2);
+  birthText.value=d;
+  updateBirthdateAndAge();
+});
+birthText.addEventListener('blur',()=>{updateBirthdateAndAge();saveDraft(false);});
+document.getElementById('insuredPhone').addEventListener('input',e=>e.target.value=formatPhone(e.target.value));
+document.getElementById('workPhone').addEventListener('input',e=>e.target.value=formatPhone(e.target.value));
+document.getElementById('insuredSSN').addEventListener('input',e=>e.target.value=formatSSN(e.target.value));
+document.getElementById('insuredEmail').addEventListener('blur',validateEmailField);
+
+['ownerPhone','payorPhone'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',e=>e.target.value=formatPhone(e.target.value));
+});
+['ownerSSN','payorSSN'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',e=>e.target.value=formatSSN(e.target.value));
+});
+['ownerEmail','payorEmail'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('blur',()=>validateEmailElement(el));
+});
+['primaryBeneficiaryPhone','contingentBeneficiaryPhone'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',e=>e.target.value=formatPhone(e.target.value));
+});
+['primaryBeneficiarySSN','contingentBeneficiarySSN'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',e=>e.target.value=formatSSN(e.target.value));
+});
+window.GOOGLE_MAPS_API_KEY=window.GOOGLE_MAPS_API_KEY||'';
+loadGoogleMapsIfConfigured();
+
+buildDrawer();render();loadDraft();updateBirthdateAndAge();replacementChanged();replacementAcknowledgementChanged();const sigCanvas=document.getElementById('sigCanvas'),ctx=sigCanvas.getContext('2d');ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';sigCanvas.addEventListener('pointerdown',startDraw);sigCanvas.addEventListener('pointermove',moveDraw);window.addEventListener('pointerup',stopDraw);sigCanvas.addEventListener('touchstart',startDraw,{passive:false});sigCanvas.addEventListener('touchmove',moveDraw,{passive:false});sigCanvas.addEventListener('touchend',stopDraw,{passive:false});
+</script>
+</body></html>
