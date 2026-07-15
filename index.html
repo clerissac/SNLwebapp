@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SNL iCare Online Application v1.8</title>
+<title>SNL iCare Online Application v1.9</title>
 <style>
 :root{--bg:#f7f9fc;--card:#fff;--text:#172033;--muted:#667085;--line:#d0d5dd;--blue:#175cd3;--soft:#eff8ff;--green:#079455;--red:#d92d20}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -33,6 +33,11 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 .replacement-alert{color:var(--red);font-style:italic;font-weight:800;margin:14px 0}
 .form-preview{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;margin:10px 0}
 .policy-row{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;background:#fafcff}
+.notice-copy{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;line-height:1.55;margin:14px 0}
+.notice-copy h2,.notice-copy h3{margin-top:0}
+.notice-copy ul{padding-left:22px}
+.notice-copy .all-caps{font-weight:800}
+.notice-copy .company-block{text-align:center;margin-top:24px}
 .modalBack{position:fixed;inset:0;background:rgba(16,24,40,.65);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}.modalBack.open{display:flex}.modal{width:min(760px,96vw);background:#fff;border-radius:18px;padding:18px}.modal canvas{width:100%;height:260px;border:2px solid #98a2b3;border-radius:12px;touch-action:none}.modalActions{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
 @media(max-width:650px){main{padding:10px}.section{padding:16px}.grid,.choice-row,.compact-demographics,.compact-measures{grid-template-columns:1fr}header{align-items:stretch}.brand{width:100%}}
 </style>
@@ -59,6 +64,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <div class="field"><label>Agent Email</label><input id="agentEmail" value="clerissac@gmail.com"></div>
 <div class="field"><label>Writing Agent Number</label><input data-field="Writing Agent"></div>
 <div class="field"><label>Billing Agent Number</label><input data-field="Billing Agent"></div>
+<div class="field"><label>Application Date</label><input id="applicationDate" inputmode="numeric" placeholder="mm/dd/yyyy" maxlength="10"></div>
 </div></section>
 
 <section class="section" data-key="insured"><h1>Proposed Insured</h1>
@@ -180,8 +186,21 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 </div>
 
 <div id="replacementFormArea" class="hidden">
-  <div class="notice"><strong>Replacement Notice - Page 1</strong><br>The complete original page is shown below for the agent and customer to review.</div>
-  <img class="form-preview" src="replacement-page-1.png" alt="Original Replacement Notice page 1">
+  <div class="notice"><strong>Replacement Notice - Page 1 wording</strong><br>The exact notice wording is shown below in a readable format. Fill-in fields remain separate.</div>
+  
+<div class="notice-copy" id="replacementPage1Wording">
+  <h2>IMPORTANT NOTICE:<br>REPLACEMENT OF LIFE INSURANCE OR ANNUITIES</h2>
+  <p><strong>This document must be signed by the applicant and the producer, if there is one, and a copy left with the applicant.</strong></p>
+
+  <p>You are contemplating the purchase of a life insurance policy or annuity contract. In some cases this purchase may involve discontinuing or changing an existing policy or contract. If so, a replacement is occurring. Financed purchases are also considered replacements.</p>
+
+  <p>A replacement occurs when a new policy or contract is purchased and, in connection with the sale, you discontinue making premium payments on the existing policy or contract, or an existing policy or contract is surrendered, forfeited, assigned to the replacing insurer, or otherwise terminated or used in a financed purchase.</p>
+
+  <p>A financed purchase occurs when the purchase of a new life insurance policy involves the use of funds obtained by the withdrawal or surrender of or by borrowing some or all of the policy values, including accumulated dividends, of an existing policy to pay all or part of any premium or payment due on the new policy. A financed purchase is a replacement.</p>
+
+  <p>You should carefully consider whether a replacement is in your best interests. You will pay acquisition costs and there may be surrender costs deducted from your policy or contract. You may be able to make changes to your existing policy or contract to meet your insurance needs at less cost. A financed purchase will reduce the value of your existing policy and may reduce the amount paid upon the death of the insured. We want you to understand the effects of replacements before you make your purchase decision and ask that you answer the following questions and consider the questions on the back of this form.</p>
+</div>
+
 
   <h2>Replacement Notice Questions</h2>
   <div class="question"><div class="qtext">1. Are you considering discontinuing making premium payments, surrendering, forfeiting, assigning to the insurer, or otherwise terminating your existing policy or contract?</div>
@@ -212,12 +231,17 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
     <div class="field"><label>Use</label><select id="repUse3"><option></option><option>Replaced</option><option>Financing</option></select></div>
   </div></div>
   <div class="field full"><label>The existing policy or contract is being replaced because:</label><textarea id="repReason" rows="3"></textarea></div>
+  <div class="notice-copy">
+    <p><strong>Make sure you know the facts.</strong> Contact your existing company or its agent for information about the old policy or contract. If you request one, an in force illustration, policy summary or available disclosure documents must be sent to you by the existing insurer. Ask for and retain all sales material used by the agent in the sales presentation. Be sure that you are making an informed decision.</p>
+    <p>I certify that the responses herein are, to the best of my knowledge, accurate.</p>
+    <p>I do not want this notice read aloud to me. (Applicants must initial only if they do not want the notice read aloud.)</p>
+  </div>
 
   <div class="grid" style="margin-top:14px">
     <div class="field"><label>Applicant's Printed Name</label><input id="replacementApplicantName"></div>
-    <div class="field"><label>Applicant Signature Date</label><input id="replacementApplicantDate" placeholder="mm/dd/yyyy"></div>
+    <div class="field"><label>Applicant Signature Date</label><input id="replacementApplicantDate" class="readonly" readonly></div>
     <div class="field"><label>Producer's Printed Name</label><input id="replacementAgentName"></div>
-    <div class="field"><label>Producer Signature Date</label><input id="replacementAgentDate" placeholder="mm/dd/yyyy"></div>
+    <div class="field"><label>Producer Signature Date</label><input id="replacementAgentDate" class="readonly" readonly></div>
   </div>
 
   <div class="field" style="margin-top:14px"><label>Does the customer decline to have page 2 read aloud?</label>
@@ -229,8 +253,72 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
   <div id="replacementInitialNotice" class="signature-note hidden">Customer initials are required in the Signature Handling section because the customer declined to have page 2 read aloud.</div>
 
   <div id="replacementPage2" class="hidden">
-    <div class="notice"><strong>Replacement Notice - Page 2</strong><br>Read this entire original page aloud to the customer.</div>
-    <img class="form-preview" src="replacement-page-2.png" alt="Original Replacement Notice page 2">
+    <div class="notice"><strong>Replacement Notice - Page 2 wording</strong><br>Read all of the wording below aloud to the customer.</div>
+    
+<div class="notice-copy" id="replacementPage2Wording">
+  <p class="all-caps">NOTICE: YOU HAVE A 30 DAY RIGHT TO EXAMINE YOUR REPLACEMENT POLICY.</p>
+  <p>Please review your policy carefully. If it is not satisfactory in any way, return it to us at our Home Office or to the agent who sold it to you within 30 days after it is received. The policy will be void at such time. We will refund any premium paid, including policy fees or other charges.</p>
+
+  <p>A replacement may not be in your best interest, or your decision could be a good one. You should make a careful comparison of the costs and benefits of your existing policy or contract and the proposed policy or contract. One way to do this is to ask the company or agent that sold you your existing policy or contract to provide you with information concerning your existing policy or contract. This may include an illustration of how your existing policy or contract is working now and how it would perform in the future based on certain assumptions. Illustrations should not, however, be used as a sole basis to compare policies or contracts. You should discuss the following with your agent to determine whether replacement or financing your purchase makes sense:</p>
+
+  <h3>PREMIUMS:</h3>
+  <ul>
+    <li>Are they affordable?</li>
+    <li>Could they change?</li>
+    <li>You're older - are premiums higher for the proposed new policy?</li>
+    <li>How long will you have to pay premiums on the new policy? On the old policy?</li>
+  </ul>
+
+  <h3>POLICY VALUES:</h3>
+  <ul>
+    <li>New policies usually take longer to build cash values and to pay dividends.</li>
+    <li>Acquisition costs for the old policy may have been paid, you will incur costs for the new one.</li>
+    <li>What surrender charges do the policies have?</li>
+    <li>What expense and sales charges will you pay on the new policy?</li>
+    <li>Does the new policy provide more insurance coverage?</li>
+  </ul>
+
+  <h3>INSURABILITY:</h3>
+  <ul>
+    <li>If your health has changed since you bought your old policy, the new one could cost you more, or you could be turned down.</li>
+    <li>You may need a medical exam for a new policy.</li>
+    <li>Claims on most new policies for up to the first two years can be denied based on inaccurate statements.</li>
+    <li>Suicide limitations may begin anew on the new coverage.</li>
+  </ul>
+
+  <h3>IF YOU ARE KEEPING THE OLD POLICY AS WELL AS THE NEW POLICY:</h3>
+  <ul>
+    <li>How are premiums for both policies being paid?</li>
+    <li>How will the premiums on your existing policy be affected?</li>
+    <li>Will a loan be deducted from death benefits?</li>
+    <li>What values from the old policy are being used to pay premiums?</li>
+  </ul>
+
+  <h3>IF YOU ARE SURRENDERING AN ANNUITY OR INTEREST SENSITIVE LIFE PRODUCT:</h3>
+  <ul>
+    <li>Will you pay surrender charges on your old contract?</li>
+    <li>What are the interest rate guarantees for the new contract?</li>
+    <li>Have you compared the contract charges or other policy expenses?</li>
+  </ul>
+
+  <h3>OTHER ISSUES TO CONSIDER FOR ALL TRANSACTIONS:</h3>
+  <ul>
+    <li>What are the tax consequences of buying the new policy?</li>
+    <li>Is this a tax free exchange? (See your tax advisor.)</li>
+    <li>Is there a benefit from favorable "grandfathered" treatment of the old policy under the federal tax code?</li>
+    <li>Will the existing insurer be willing to modify the old policy?</li>
+    <li>How does the quality and financial stability of the new company compare with your existing company?</li>
+  </ul>
+
+  <div class="company-block">
+    <strong>SECURITY NATIONAL LIFE INSURANCE COMPANY</strong><br>
+    5300 South 360 West, Suite 250<br>
+    Salt Lake City, Utah 84123<br>
+    Telephone: (801) 264-1060<br>
+    Toll Free: (800) 574-7117
+  </div>
+</div>
+
   </div>
 </div>
 </section>
@@ -896,6 +984,31 @@ function other(type,show,el){el.parentElement.querySelectorAll('.choice').forEac
 function toggleMed(i,yes){document.getElementById('medDetails'+i).classList.toggle('hidden',!yes)}
 function buildMedicalRows(){const yes=[];for(let i=1;i<=20;i++){const r=document.querySelector(`input[name="med${i}"]:checked`);if(r&&r.value==='yes')yes.push(i)}const wrap=document.getElementById('medicalRows');wrap.innerHTML='';if(!yes.length){wrap.innerHTML='<div class="notice">No medical detail rows are needed because all medical questions were answered No.</div>';return}yes.slice(0,5).forEach((q,row)=>{const div=document.createElement('div');div.className='grid';div.style.marginBottom='14px';div.innerHTML=`<div class="field"><label>Question #</label><input data-field="Medical Question Row${row+1}" value="${q}"></div><div class="field"><label>Medical condition</label><input data-field="Medical ConditionsRow${row+1}" value="${document.querySelector(`[data-med-condition="${q}"]`).value}"></div><div class="field"><label>Medication(s)</label><input data-field="Medications including oxygenRow${row+1}" value="${document.querySelector(`[data-med-medication="${q}"]`).value}"></div><div class="field"><label>Dosage</label><input data-field="DosageRow${row+1}" value="${document.querySelector(`[data-med-dosage="${q}"]`).value}"></div><div class="field"><label>Duration</label><input data-field="Duration fromtoRow${row+1}" value="${document.querySelector(`[data-med-duration="${q}"]`).value}"></div>`;wrap.appendChild(div)});}
 
+
+function formatApplicationDate(value){
+  let d=digitsOnly(value).slice(0,8);
+  if(d.length>4)d=d.slice(0,2)+'/'+d.slice(2,4)+'/'+d.slice(4);
+  else if(d.length>2)d=d.slice(0,2)+'/'+d.slice(2);
+  return d;
+}
+function validApplicationDate(value){
+  const parts=String(value||'').split('/');
+  if(parts.length!==3)return false;
+  const month=Number(parts[0]),day=Number(parts[1]),year=Number(parts[2]);
+  if(year<1900||year>2100)return false;
+  const dt=new Date(year,month-1,day);
+  return dt.getFullYear()===year&&dt.getMonth()===month-1&&dt.getDate()===day;
+}
+function syncApplicationDate(){
+  const date=(document.getElementById('applicationDate')?.value||'').trim();
+  const ids=['replacementApplicantDate','replacementAgentDate'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=date;});
+  const authDate=document.querySelector('[data-field="Date"]');
+  if(authDate)authDate.value=date;
+  const receiptDate=document.querySelector('[data-field="date"]');
+  if(receiptDate)receiptDate.value=date;
+}
+
 function radioValue(name){
   return document.querySelector(`input[name="${name}"]:checked`)?.value||'';
 }
@@ -922,6 +1035,7 @@ function replacementAcknowledgementChanged(){
   if(show){
     document.getElementById('replacementApplicantName').value=document.getElementById('insuredName').value;
     document.getElementById('replacementAgentName').value=document.querySelector('[data-field="Agents Printed Name"]').value;
+    syncApplicationDate();
   }
   readAloudChoiceChanged();
   saveDraft(false);
@@ -973,9 +1087,10 @@ async function buildReplacementPdf(){
   const repForm=repPdf.getForm();
   const setText=(name,value)=>{if(!value)return;try{repForm.getTextField(name).setText(String(value))}catch(e){console.warn('Replacement field',name,e)}};
   setText('ApplicantName',document.getElementById('replacementApplicantName').value);
-  setText('ApplicantSigDate',document.getElementById('replacementApplicantDate').value);
+  const applicationDate=(document.getElementById('applicationDate').value||'').trim();
+  setText('ApplicantSigDate',applicationDate);
   setText('AgentNameNumber',document.getElementById('replacementAgentName').value);
-  setText('AgentSigDate',document.getElementById('replacementAgentDate').value);
+  setText('AgentSigDate',applicationDate);
   setText('ReplaceReason',document.getElementById('repReason').value);
   for(let i=1;i<=3;i++){
     setText('InsCompany'+i,document.getElementById('repInsCompany'+i).value);
@@ -1013,6 +1128,11 @@ async function buildReplacementPdf(){
 
 async function generatePdf(){syncCopies();syncEmailFields();buildMedicalRows();const btns=document.querySelectorAll('button');btns.forEach(b=>b.disabled=true);status('Creating official PDF...');try{const bytes=await fetch('SNL_iCare-DocuSign.pdf').then(r=>r.arrayBuffer());const pdf=await PDFLib.PDFDocument.load(bytes);const form=pdf.getForm();
 const values={};document.querySelectorAll('[data-field]').forEach(el=>{if(el.value)values[el.dataset.field]=el.value});
+const appDate=(document.getElementById('applicationDate')?.value||'').trim();
+if(appDate){
+  values['Date']=appDate;
+  values['date']=appDate;
+}
 
 const primaryAddress=beneficiaryAddressLines('primaryBeneficiary');
 if(primaryAddress.line1)values['Address 1']=primaryAddress.line1;
@@ -1041,6 +1161,13 @@ if(!validateEmailField()||
    !validateEmailElement(document.getElementById('payorEmail'))){
   alert('Please enter valid email addresses before generating the PDF.');
   throw new Error('Invalid email');
+}
+if(!validApplicationDate(appDate)){
+  document.getElementById('applicationDate').classList.add('field-error');
+  alert('Please enter the Application Date in mm/dd/yyyy format before generating the PDF.');
+  throw new Error('Invalid application date');
+}else{
+  document.getElementById('applicationDate').classList.remove('field-error');
 }
 if(emailMode){values["Email Form Insured's Name"]=document.getElementById('emailInsuredName').value;values["Email Form Insured's Email"]=document.getElementById('emailInsuredEmail').value;values["Email Form Payor's Name"]=document.getElementById('emailPayorName').value;values["Email Form Payor's Email"]=document.getElementById('emailPayorEmail').value;values["Email Form Owner's Name"]=document.getElementById('emailOwnerName').value;values["Email Form Owner's Email"]=document.getElementById('emailOwnerEmail').value;values["Email Form Agent's Name"]=document.getElementById('emailAgentName').value;values["Email Form Agent's Email"]=document.getElementById('emailAgentEmail').value}
 for(const [name,value] of Object.entries(values)){try{form.getTextField(name).setText(String(value))}catch(e){console.warn('Text field',name,e)}}
@@ -1072,6 +1199,18 @@ document.getElementById('insuredPhone').addEventListener('input',e=>e.target.val
 document.getElementById('workPhone').addEventListener('input',e=>e.target.value=formatPhone(e.target.value));
 document.getElementById('insuredSSN').addEventListener('input',e=>e.target.value=formatSSN(e.target.value));
 document.getElementById('insuredEmail').addEventListener('blur',validateEmailField);
+const applicationDateInput=document.getElementById('applicationDate');
+applicationDateInput.addEventListener('input',e=>{
+  e.target.value=formatApplicationDate(e.target.value);
+  e.target.classList.remove('field-error');
+  syncApplicationDate();
+});
+applicationDateInput.addEventListener('blur',()=>{
+  if(applicationDateInput.value&&!validApplicationDate(applicationDateInput.value))applicationDateInput.classList.add('field-error');
+  else applicationDateInput.classList.remove('field-error');
+  syncApplicationDate();
+  saveDraft(false);
+});
 
 ['ownerPhone','payorPhone'].forEach(id=>{
   const el=document.getElementById(id);
@@ -1096,6 +1235,6 @@ document.getElementById('insuredEmail').addEventListener('blur',validateEmailFie
 window.GOOGLE_MAPS_API_KEY=window.GOOGLE_MAPS_API_KEY||'';
 loadGoogleMapsIfConfigured();
 
-buildDrawer();render();loadDraft();updateBirthdateAndAge();replacementChanged();replacementAcknowledgementChanged();const sigCanvas=document.getElementById('sigCanvas'),ctx=sigCanvas.getContext('2d');ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';sigCanvas.addEventListener('pointerdown',startDraw);sigCanvas.addEventListener('pointermove',moveDraw);window.addEventListener('pointerup',stopDraw);sigCanvas.addEventListener('touchstart',startDraw,{passive:false});sigCanvas.addEventListener('touchmove',moveDraw,{passive:false});sigCanvas.addEventListener('touchend',stopDraw,{passive:false});
+buildDrawer();render();loadDraft();updateBirthdateAndAge();syncApplicationDate();replacementChanged();replacementAcknowledgementChanged();const sigCanvas=document.getElementById('sigCanvas'),ctx=sigCanvas.getContext('2d');ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';sigCanvas.addEventListener('pointerdown',startDraw);sigCanvas.addEventListener('pointermove',moveDraw);window.addEventListener('pointerup',stopDraw);sigCanvas.addEventListener('touchstart',startDraw,{passive:false});sigCanvas.addEventListener('touchmove',moveDraw,{passive:false});sigCanvas.addEventListener('touchend',stopDraw,{passive:false});
 </script>
 </body></html>
