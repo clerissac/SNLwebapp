@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SNL iCare Online Application v1.9</title>
+<title>SNL iCare Online Application v2.1</title>
 <style>
 :root{--bg:#f7f9fc;--card:#fff;--text:#172033;--muted:#667085;--line:#d0d5dd;--blue:#175cd3;--soft:#eff8ff;--green:#079455;--red:#d92d20}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -22,7 +22,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 .address-suggestions.open{display:block}
 .address-suggestions button{width:100%;text-align:left;border:0;background:#fff;padding:10px 12px;border-bottom:1px solid #f0f2f5}
 .address-suggestions button:last-child{border-bottom:0}
-.address-suggestions button:hover{background:var(--soft)}
+.address-suggestions button:hover{background:var(--soft)}.address-link{display:flex;align-items:center;gap:8px;margin:6px 0 10px;font-size:13px;font-weight:700;color:#344054}.address-linked input{background:#f2f4f7!important;color:#475467}
 .field-error{border-color:var(--red)!important;background:#fff5f5!important}
 .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}.notice{background:var(--soft);border-left:4px solid var(--blue);padding:13px;border-radius:10px;margin:14px 0}.warning{background:#fff7ed;border-left-color:#f79009}
 .choice-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px;font-weight:700}.choice.selected{border-color:var(--blue);background:var(--soft)}
@@ -38,7 +38,10 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 .notice-copy ul{padding-left:22px}
 .notice-copy .all-caps{font-weight:800}
 .notice-copy .company-block{text-align:center;margin-top:24px}
-.modalBack{position:fixed;inset:0;background:rgba(16,24,40,.65);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}.modalBack.open{display:flex}.modal{width:min(760px,96vw);background:#fff;border-radius:18px;padding:18px}.modal canvas{width:100%;height:260px;border:2px solid #98a2b3;border-radius:12px;touch-action:none}.modalActions{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
+.modalBack{position:fixed;inset:0;background:rgba(16,24,40,.65);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}.modalBack.open{display:flex}.modal{width:min(760px,96vw);background:#fff;border-radius:18px;padding:18px}.modal canvas{width:100%;height:260px;border:2px solid #98a2b3;border-radius:12px;touch-action:none}
+.pdf-preview-modal{width:min(1100px,98vw);height:min(92vh,920px);display:flex;flex-direction:column}
+.pdf-preview-modal iframe{width:100%;flex:1;border:1px solid var(--line);border-radius:12px;background:#fff}
+.pdf-preview-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.modalActions{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
 @media(max-width:650px){main{padding:10px}.section{padding:16px}.grid,.choice-row,.compact-demographics,.compact-measures{grid-template-columns:1fr}header{align-items:stretch}.brand{width:100%}}
 </style>
 </head>
@@ -53,7 +56,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
   <button class="btn secondary" onclick="openDrawer()">Sections</button>
   <button class="btn secondary" onclick="clearCurrentSection()">Clear Section</button>
   <button class="btn secondary" onclick="saveDraft(true)">Save Draft</button>
-  <button class="btn success" onclick="generatePdf()">Generate PDF</button>
+  <button class="btn success" onclick="previewPdf()">Preview PDF</button>
   <span class="status" id="status"></span>
   <div class="progress"><div id="progressBar"></div></div>
 </header>
@@ -103,7 +106,8 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <div class="grid hidden" id="ownerFields">
 <div class="field full"><label>Owner's Name</label><input data-field="Owners Name if other than the Proposed Insured" id="ownerName"></div>
 <div class="field"><label>Relationship</label><input data-field="Relationship"></div>
-<div class="field full address-wrap"><label>Address</label>
+<div class="full"><label class="address-link"><input type="checkbox" id="ownerSameAsInsured" onchange="toggleAddressLink('owner',this.checked)"> Same as Proposed Insured</label></div>
+<div class="field full address-wrap" id="ownerAddressGroup"><label>Address</label>
 <input data-field="Address" id="ownerStreet" autocomplete="street-address" placeholder="Start typing the street address">
 <div class="address-suggestions" id="ownerAddressSuggestions"></div>
 </div>
@@ -122,7 +126,8 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <div class="grid hidden" id="payorFields">
 <div class="field full"><label>Payor's Name</label><input data-field="Payors Name if other than the Proposed Insured" id="payorName"></div>
 <div class="field"><label>Relationship</label><input data-field="Relationship_2"></div>
-<div class="field full address-wrap"><label>Address</label>
+<div class="full"><label class="address-link"><input type="checkbox" id="payorSameAsInsured" onchange="toggleAddressLink('payor',this.checked)"> Same as Proposed Insured</label></div>
+<div class="field full address-wrap" id="payorAddressGroup"><label>Address</label>
 <input data-field="Address_2" id="payorStreet" autocomplete="street-address" placeholder="Start typing the street address">
 <div class="address-suggestions" id="payorAddressSuggestions"></div>
 </div>
@@ -138,7 +143,8 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <h3>Primary Beneficiary</h3>
 <div class="grid">
 <div class="field full"><label>Name</label><input data-field="Primary Beneficiary"></div>
-<div class="field full address-wrap"><label>Street Address</label>
+<div class="full"><label class="address-link"><input type="checkbox" id="primaryBeneficiarySameAsInsured" onchange="toggleAddressLink('primaryBeneficiary',this.checked)"> Same as Proposed Insured</label></div>
+<div class="field full address-wrap" id="primaryBeneficiaryAddressGroup"><label>Street Address</label>
 <input id="primaryBeneficiaryStreet" autocomplete="street-address" placeholder="Start typing the street address">
 <div class="address-suggestions" id="primaryBeneficiaryAddressSuggestions"></div>
 </div>
@@ -155,7 +161,8 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 
 <div class="grid hidden" id="contingent" style="margin-top:14px">
 <div class="field full"><label>Name</label><input data-field="Contingent Beneficiary"></div>
-<div class="field full address-wrap"><label>Street Address</label>
+<div class="full"><label class="address-link"><input type="checkbox" id="contingentBeneficiarySameAsInsured" onchange="toggleAddressLink('contingentBeneficiary',this.checked)"> Same as Proposed Insured</label></div>
+<div class="field full address-wrap" id="contingentBeneficiaryAddressGroup"><label>Street Address</label>
 <input id="contingentBeneficiaryStreet" autocomplete="street-address" placeholder="Start typing the street address">
 <div class="address-suggestions" id="contingentBeneficiaryAddressSuggestions"></div>
 </div>
@@ -213,21 +220,21 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
   <h3>Existing Policies or Contracts</h3>
   <p class="sub">Complete the rows that apply.</p>
   <div class="policy-row"><strong>Policy 1</strong><div class="grid">
-    <div class="field full"><label>Insurer Name and Address</label><input id="repInsCompany1"></div>
+    <div class="field full"><label>Insurer Name and Address (Company)</label><input id="repInsCompany1"></div>
     <div class="field"><label>Contract/Policy Number</label><input id="repPolicy1"></div>
-    <div class="field"><label>Insured/Annuitant</label><input id="repInsured1"></div>
+    <div class="field"><label>Insured / Annuitant (Name)</label><input id="repInsured1"></div>
     <div class="field"><label>Use</label><select id="repUse1"><option></option><option>Replaced</option><option>Financing</option></select></div>
   </div></div>
   <div class="policy-row"><strong>Policy 2</strong><div class="grid">
-    <div class="field full"><label>Insurer Name and Address</label><input id="repInsCompany2"></div>
+    <div class="field full"><label>Insurer Name and Address (Company)</label><input id="repInsCompany2"></div>
     <div class="field"><label>Contract/Policy Number</label><input id="repPolicy2"></div>
-    <div class="field"><label>Insured/Annuitant</label><input id="repInsured2"></div>
+    <div class="field"><label>Insured / Annuitant (Name)</label><input id="repInsured2"></div>
     <div class="field"><label>Use</label><select id="repUse2"><option></option><option>Replaced</option><option>Financing</option></select></div>
   </div></div>
   <div class="policy-row"><strong>Policy 3</strong><div class="grid">
-    <div class="field full"><label>Insurer Name and Address</label><input id="repInsCompany3"></div>
+    <div class="field full"><label>Insurer Name and Address (Company)</label><input id="repInsCompany3"></div>
     <div class="field"><label>Contract/Policy Number</label><input id="repPolicy3"></div>
-    <div class="field"><label>Insured/Annuitant</label><input id="repInsured3"></div>
+    <div class="field"><label>Insured / Annuitant (Name)</label><input id="repInsured3"></div>
     <div class="field"><label>Use</label><select id="repUse3"><option></option><option>Replaced</option><option>Financing</option></select></div>
   </div></div>
   <div class="field full"><label>The existing policy or contract is being replaced because:</label><textarea id="repReason" rows="3"></textarea></div>
@@ -737,11 +744,29 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <div class="field"><label>Agent Name</label><input id="emailAgentName"></div><div class="field"><label>Agent Email</label><input id="emailAgentEmail"></div>
 </div></div></section>
 
-<section class="section" data-key="review"><h1>Review and Generate PDF</h1><div class="notice">Click Generate PDF. Your answers will be placed into the official iCare PDF. If signatures are by email, the Email Collection Form will be page 1.</div>
-<button class="btn success" onclick="generatePdf()">Generate and Download Official PDF</button></section>
+<section class="section" data-key="review"><h1>Review and Generate PDF</h1>
+<div class="notice">Use Preview PDF to review a read-only copy of the completed packet. Correct anything in the appropriate application section, then return here to generate the final downloadable packet.</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn secondary" onclick="previewPdf()">Preview Completed Packet</button>
+<button class="btn success" onclick="generatePdf(true)">Generate and Download Final Packet</button>
+</div></section>
 
 <div class="nav"><button class="btn secondary" id="back" onclick="move(-1)" disabled>Back</button><button class="btn primary" id="next" onclick="move(1)">Continue</button></div>
 </main>
+
+
+<div class="modalBack" id="pdfPreviewModal">
+  <div class="modal pdf-preview-modal">
+    <div class="pdf-preview-header">
+      <div>
+        <h2 style="margin:0">Completed Packet Preview</h2>
+        <p class="sub" style="margin:4px 0 0">Read-only preview. Make corrections in the appropriate application section.</p>
+      </div>
+      <button class="btn secondary" onclick="closePdfPreview()">Close</button>
+    </div>
+    <iframe id="pdfPreviewFrame" title="Completed application packet preview"></iframe>
+  </div>
+</div>
 
 <div class="modalBack" id="sigModal"><div class="modal"><h2 id="sigTitle">Signature</h2><p>Sign in the large box. It will shrink to fit the official form.</p>
 <canvas id="sigCanvas" width="1400" height="480"></canvas><div class="modalActions"><button class="btn secondary" onclick="clearSig()">Clear</button><div><button class="btn secondary" onclick="closeSig()">Cancel</button> <button class="btn primary" onclick="saveSig()">Use Signature</button></div></div></div></div>
@@ -899,13 +924,20 @@ function clearCurrentSection(){
   active.querySelectorAll('.details').forEach(el=>el.classList.add('hidden'));
   if(active.dataset.key==='owner'){
     document.getElementById('ownerFields').classList.add('hidden');
+    const cb=document.getElementById('ownerSameAsInsured'); if(cb)cb.checked=false;
+    setAddressReadOnly('owner',false);
     active.querySelectorAll('.choice').forEach((b,i)=>b.classList.toggle('selected',i===0));
   }
   if(active.dataset.key==='payor'){
     document.getElementById('payorFields').classList.add('hidden');
+    const cb=document.getElementById('payorSameAsInsured'); if(cb)cb.checked=false;
+    setAddressReadOnly('payor',false);
     active.querySelectorAll('.choice').forEach((b,i)=>b.classList.toggle('selected',i===0));
   }
   if(active.dataset.key==='beneficiary'){
+    const primaryCb=document.getElementById('primaryBeneficiarySameAsInsured');
+    if(primaryCb)primaryCb.checked=false;
+    setAddressReadOnly('primaryBeneficiary',false);
     document.getElementById('contingentChoice').value='No';
     clearContingentBeneficiary();
     document.getElementById('contingent').classList.add('hidden');
@@ -946,7 +978,55 @@ function clearCurrentSection(){
 }
 
 
+
+const linkedAddressPrefixes=['owner','payor','primaryBeneficiary','contingentBeneficiary'];
+
+function insuredAddressValues(){
+  return {
+    street:(document.getElementById('insuredStreet')?.value||'').trim(),
+    city:(document.getElementById('insuredCity')?.value||'').trim(),
+    state:(document.getElementById('insuredState')?.value||'').trim(),
+    zip:(document.getElementById('insuredZip')?.value||'').trim()
+  };
+}
+function setAddressFields(prefix,values){
+  const mapping={street:'Street',city:'City',state:'State',zip:'Zip'};
+  Object.entries(mapping).forEach(([key,suffix])=>{
+    const el=document.getElementById(prefix+suffix);
+    if(el)el.value=values[key]||'';
+  });
+}
+function setAddressReadOnly(prefix,linked){
+  ['Street','City','State','Zip'].forEach(suffix=>{
+    const el=document.getElementById(prefix+suffix);
+    if(el){
+      el.readOnly=linked;
+      el.classList.toggle('readonly',linked);
+    }
+  });
+  const group=document.getElementById(prefix+'AddressGroup');
+  if(group)group.classList.toggle('address-linked',linked);
+}
+function toggleAddressLink(prefix,linked){
+  if(linked)setAddressFields(prefix,insuredAddressValues());
+  setAddressReadOnly(prefix,linked);
+  saveDraft(false);
+}
+function refreshLinkedAddresses(){
+  const values=insuredAddressValues();
+  linkedAddressPrefixes.forEach(prefix=>{
+    const cb=document.getElementById(prefix+'SameAsInsured');
+    if(cb?.checked){
+      setAddressFields(prefix,values);
+      setAddressReadOnly(prefix,true);
+    }
+  });
+}
+
 function clearContingentBeneficiary(){
+  const link=document.getElementById('contingentBeneficiarySameAsInsured');
+  if(link)link.checked=false;
+  setAddressReadOnly('contingentBeneficiary',false);
   const container=document.getElementById('contingent');
   if(!container)return;
   container.querySelectorAll('input,select,textarea').forEach(el=>{
@@ -1057,7 +1137,14 @@ function status(msg){document.getElementById('status').textContent=msg;setTimeou
 function getState(){const vals={};document.querySelectorAll('input,select,textarea').forEach((el,i)=>{if(el.type==='radio'||el.type==='checkbox')vals[i]=el.checked;else vals[i]=el.value});return{current,emailMode,vals,signatures}}
 function saveDraft(show=false){localStorage.setItem('snl-icare-simple-final',JSON.stringify(getState()));if(show)status('Draft saved on this device.')}
 function loadDraft(){try{const s=JSON.parse(localStorage.getItem('snl-icare-simple-final')||'null');if(!s)return;document.querySelectorAll('input,select,textarea').forEach((el,i)=>{if(s.vals[i]===undefined)return;if(el.type==='radio'||el.type==='checkbox')el.checked=s.vals[i];else el.value=s.vals[i]});Object.assign(signatures,s.signatures||{});current=s.current||0;emailMode=!!s.emailMode;render()}catch(e){console.warn(e)}}
-document.addEventListener('input',()=>{syncCopies();saveDraft(false)});document.addEventListener('change',()=>{syncCopies();saveDraft(false)});
+document.addEventListener('input',e=>{
+  if(['insuredStreet','insuredCity','insuredState','insuredZip'].includes(e.target.id))refreshLinkedAddresses();
+  syncCopies();saveDraft(false);
+});
+document.addEventListener('change',e=>{
+  if(['insuredStreet','insuredCity','insuredState','insuredZip'].includes(e.target.id))refreshLinkedAddresses();
+  syncCopies();saveDraft(false);
+});
 function canvasPoint(e){const c=document.getElementById('sigCanvas'),r=c.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return{x:(p.clientX-r.left)*(c.width/r.width),y:(p.clientY-r.top)*(c.height/r.height)}}
 function startDraw(e){drawing=true;const p=canvasPoint(e),ctx=sigCanvas.getContext('2d');ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault()}
 function moveDraw(e){if(!drawing)return;const p=canvasPoint(e),ctx=sigCanvas.getContext('2d');ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault()}
@@ -1126,7 +1213,24 @@ async function buildReplacementPdf(){
   return repPdf;
 }
 
-async function generatePdf(){syncCopies();syncEmailFields();buildMedicalRows();const btns=document.querySelectorAll('button');btns.forEach(b=>b.disabled=true);status('Creating official PDF...');try{const bytes=await fetch('SNL_iCare-DocuSign.pdf').then(r=>r.arrayBuffer());const pdf=await PDFLib.PDFDocument.load(bytes);const form=pdf.getForm();
+let currentPreviewUrl='';
+
+async function previewPdf(){
+  await generatePdf(false);
+}
+function closePdfPreview(){
+  document.getElementById('pdfPreviewModal').classList.remove('open');
+  document.getElementById('pdfPreviewFrame').src='';
+  if(currentPreviewUrl){
+    URL.revokeObjectURL(currentPreviewUrl);
+    currentPreviewUrl='';
+  }
+}
+document.getElementById('pdfPreviewModal').addEventListener('click',e=>{
+  if(e.target.id==='pdfPreviewModal')closePdfPreview();
+});
+
+async function generatePdf(downloadFinal=false){syncCopies();syncEmailFields();buildMedicalRows();const btns=document.querySelectorAll('button');btns.forEach(b=>b.disabled=true);status('Creating official PDF...');try{const bytes=await fetch('SNL_iCare-DocuSign.pdf').then(r=>r.arrayBuffer());const pdf=await PDFLib.PDFDocument.load(bytes);const form=pdf.getForm();
 const values={};document.querySelectorAll('[data-field]').forEach(el=>{if(el.value)values[el.dataset.field]=el.value});
 const appDate=(document.getElementById('applicationDate')?.value||'').trim();
 if(appDate){
@@ -1185,7 +1289,29 @@ if(replacementPdf){
   const repPages=await output.copyPages(replacementPdf,[0,1]);
   repPages.forEach(p=>output.addPage(p));
 }
-const out=await output.save();const blob=new Blob([out],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=emailMode?'SNL_iCare_DocuSign_Ready.pdf':'SNL_iCare_Completed.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Completed PDF downloaded.')}catch(e){console.error(e);alert('The PDF could not be created. Please try again.')}finally{btns.forEach(b=>b.disabled=false)}}
+const out=await output.save();
+const blob=new Blob([out],{type:'application/pdf'});
+const url=URL.createObjectURL(blob);
+if(downloadFinal){
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=emailMode?'SNL_iCare_DocuSign_Ready.pdf':'SNL_iCare_Completed.pdf';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  status('Final PDF packet downloaded.');
+}else{
+  if(currentPreviewUrl)URL.revokeObjectURL(currentPreviewUrl);
+  currentPreviewUrl=url;
+  document.getElementById('pdfPreviewFrame').src=url;
+  document.getElementById('pdfPreviewModal').classList.add('open');
+  status('Preview ready.');
+}
+}catch(e){
+  console.error(e);
+  alert('The PDF could not be created. Please try again.');
+}finally{
+  btns.forEach(b=>b.disabled=false);
+}}
 const birthText=document.getElementById('birthdateText');
 birthText.addEventListener('input',()=>{
   let d=digitsOnly(birthText.value).slice(0,8);
@@ -1235,6 +1361,11 @@ applicationDateInput.addEventListener('blur',()=>{
 window.GOOGLE_MAPS_API_KEY=window.GOOGLE_MAPS_API_KEY||'';
 loadGoogleMapsIfConfigured();
 
-buildDrawer();render();loadDraft();updateBirthdateAndAge();syncApplicationDate();replacementChanged();replacementAcknowledgementChanged();const sigCanvas=document.getElementById('sigCanvas'),ctx=sigCanvas.getContext('2d');ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';sigCanvas.addEventListener('pointerdown',startDraw);sigCanvas.addEventListener('pointermove',moveDraw);window.addEventListener('pointerup',stopDraw);sigCanvas.addEventListener('touchstart',startDraw,{passive:false});sigCanvas.addEventListener('touchmove',moveDraw,{passive:false});sigCanvas.addEventListener('touchend',stopDraw,{passive:false});
+buildDrawer();render();loadDraft();updateBirthdateAndAge();syncApplicationDate();
+linkedAddressPrefixes.forEach(prefix=>{
+  const cb=document.getElementById(prefix+'SameAsInsured');
+  if(cb?.checked){setAddressFields(prefix,insuredAddressValues());setAddressReadOnly(prefix,true);}
+});
+replacementChanged();replacementAcknowledgementChanged();const sigCanvas=document.getElementById('sigCanvas'),ctx=sigCanvas.getContext('2d');ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';sigCanvas.addEventListener('pointerdown',startDraw);sigCanvas.addEventListener('pointermove',moveDraw);window.addEventListener('pointerup',stopDraw);sigCanvas.addEventListener('touchstart',startDraw,{passive:false});sigCanvas.addEventListener('touchmove',moveDraw,{passive:false});sigCanvas.addEventListener('touchend',stopDraw,{passive:false});
 </script>
 </body></html>
