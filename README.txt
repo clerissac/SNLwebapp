@@ -1,14 +1,12 @@
-SNL iCare Online Application TEST BUILD v2.2F
+SNL iCare Online Application TEST BUILD v2.2G
 
-Simplified native PDF preview:
-- Removed the custom popup renderer and custom zoom controls.
-- Preview PDF opens in the browser's normal PDF viewer.
-- Preview does not automatically download.
-- The browser/device handles scrolling, zooming, and rotation.
-- Email Collection Form appears only when Company obtains signatures by email is selected.
-- Email Collection Form is excluded when Sign in person is selected.
-- Prescription Authorization signatures remain on Signature Handling and print on the authorization page.
-- Preview still skips strict validation of unfinished future sections.
+Preview button correction:
+- Restored the missing previewPdf button function.
+- The browser preview window now opens immediately when Preview PDF is pressed.
+- The application prepares the PDF and then loads it into that already-open window.
+- This prevents browsers from blocking the preview as a delayed popup.
+- Native browser PDF scrolling and zoom remain in use.
+- Email Collection Form logic and Prescription Authorization signature logic are unchanged.
 
 After uploading, open:
-https://clerissac.github.io/SNLwebapp/?v=22f
+https://clerissac.github.io/SNLwebapp/?v=22g
