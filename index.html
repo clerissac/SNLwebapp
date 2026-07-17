@@ -6,7 +6,7 @@
 <meta http-equiv="Expires" content="0">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SNL iCare Online Application TEST BUILD v2.2G</title>
+<title>SNL iCare Online Application TEST BUILD v2.2H</title>
 <style>
 :root{--bg:#f7f9fc;--card:#fff;--text:#172033;--muted:#667085;--line:#d0d5dd;--blue:#175cd3;--soft:#eff8ff;--green:#079455;--red:#d92d20}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -59,7 +59,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
       const keys=await caches.keys();
       for(const key of keys) await caches.delete(key);
     }
-    console.log('SNL iCare TEST BUILD v2.2G loaded');
+    console.log('SNL iCare TEST BUILD v2.2H loaded');
   }catch(e){
     console.warn('Cache cleanup skipped',e);
   }
@@ -781,6 +781,24 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 
 
 
+
+<div class="modalBack" id="sigModal">
+  <div class="modal">
+    <h2 id="sigTitle">Signature</h2>
+    <p>Sign in the large box. It will shrink to fit the official form.</p>
+    <canvas id="sigCanvas" width="1400" height="480"></canvas>
+    <div class="modalActions">
+      <button class="btn secondary" type="button" onclick="clearSig()">Clear</button>
+      <div>
+        <button class="btn secondary" type="button" onclick="closeSig()">Cancel</button>
+        <button class="btn primary" type="button" onclick="saveSig()">Use Signature</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
 <script>
 const sections=['agent','insured','owner','payor','beneficiary','replacement','physician','tobacco','medical','details','authorization','coverage','payment','agentstatement','signatures','review'];
 const titles=['Agent Information','Proposed Insured','Owner','Payor','Beneficiaries','Replacement','Physician','Tobacco/Nicotine','Medical Questions','Medical Details','Prescription Authorization','Plan Amount','Payment Information','Agent Statement','Signatures','Review'];
@@ -1417,6 +1435,22 @@ linkedAddressPrefixes.forEach(prefix=>{
   const cb=document.getElementById(prefix+'SameAsInsured');
   if(cb?.checked){setAddressFields(prefix,insuredAddressValues());setAddressReadOnly(prefix,true);}
 });
-replacementChanged();replacementAcknowledgementChanged();const sigCanvas=document.getElementById('sigCanvas'),ctx=sigCanvas.getContext('2d');ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';sigCanvas.addEventListener('pointerdown',startDraw);sigCanvas.addEventListener('pointermove',moveDraw);window.addEventListener('pointerup',stopDraw);sigCanvas.addEventListener('touchstart',startDraw,{passive:false});sigCanvas.addEventListener('touchmove',moveDraw,{passive:false});sigCanvas.addEventListener('touchend',stopDraw,{passive:false});
+replacementChanged();
+replacementAcknowledgementChanged();
+const sigCanvas=document.getElementById('sigCanvas');
+if(sigCanvas){
+  const ctx=sigCanvas.getContext('2d');
+  ctx.lineWidth=5;
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+  sigCanvas.addEventListener('pointerdown',startDraw);
+  sigCanvas.addEventListener('pointermove',moveDraw);
+  window.addEventListener('pointerup',stopDraw);
+  sigCanvas.addEventListener('touchstart',startDraw,{passive:false});
+  sigCanvas.addEventListener('touchmove',moveDraw,{passive:false});
+  sigCanvas.addEventListener('touchend',stopDraw,{passive:false});
+}else{
+  console.error('Signature canvas failed to load.');
+}
 </script>
 </body></html>
