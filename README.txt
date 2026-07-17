@@ -1,11 +1,14 @@
-SNL iCare Online Application v2.2B — Signatures and full preview
+SNL iCare Online Application TEST BUILD v2.2C
 
-Changes:
-- Prescription Authorization signature capture was moved to Signature Handling.
-- The Prescription Authorization section now displays signature placeholders/instructions.
-- Captured Prescription Authorization signatures are still printed on the actual authorization page.
-- Preview now renders every packet page vertically rather than relying on Safari's one-page PDF iframe.
-- Blank packet pages remain visible in Preview.
-- In-person Preview includes all five carrier PDF pages.
-- The final in-person packet continues to omit the email-signature collection cover page.
-- No approved interview fields or PDF mappings were otherwise changed.
+This build is intentionally marked so you can confirm the correct GitHub file is being served.
+
+Visible checks:
+1. The header says TEST BUILD v2.2C.
+2. Signature Handling begins with two Prescription Authorization signature buttons.
+3. Prescription Authorization itself contains placeholders only.
+4. The preview title says v2.2C Multi-Page Viewer.
+5. Preview renders all packet pages vertically.
+
+This build also attempts to unregister old service workers and clear browser cache storage.
+After uploading, open the site using:
+https://clerissac.github.io/SNLwebapp/?v=22c
