@@ -1,12 +1,11 @@
-SNL iCare Online Application v2.1 — Replacement labels and PDF preview
+SNL iCare Online Application v2.2B — Signatures and full preview
 
 Changes:
-- Replacement labels now read:
-  * Insurer Name and Address (Company)
-  * Insured / Annuitant (Name)
-- Header button now opens a read-only completed PDF preview.
-- Previewing no longer downloads a PDF.
-- The PDF preview cannot be edited.
-- Corrections must be made in the appropriate interview section so every repeated location stays consistent.
-- Final PDF download is available only in the Review and Generate PDF section.
-- Existing PDF mappings, signatures, packet order, and approved workflow remain unchanged.
+- Prescription Authorization signature capture was moved to Signature Handling.
+- The Prescription Authorization section now displays signature placeholders/instructions.
+- Captured Prescription Authorization signatures are still printed on the actual authorization page.
+- Preview now renders every packet page vertically rather than relying on Safari's one-page PDF iframe.
+- Blank packet pages remain visible in Preview.
+- In-person Preview includes all five carrier PDF pages.
+- The final in-person packet continues to omit the email-signature collection cover page.
+- No approved interview fields or PDF mappings were otherwise changed.

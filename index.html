@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SNL iCare Online Application v2.1</title>
+<title>SNL iCare Online Application v2.2B</title>
 <style>
 :root{--bg:#f7f9fc;--card:#fff;--text:#172033;--muted:#667085;--line:#d0d5dd;--blue:#175cd3;--soft:#eff8ff;--green:#079455;--red:#d92d20}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
 button,input,select,textarea{font:inherit}button{cursor:pointer}
 header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.brand{font-weight:800;color:var(--blue);margin-right:auto}.status{font-size:13px;color:var(--muted)}
+.brand{font-weight:800;color:var(--blue);margin-right:auto}.status{font-size:13px;color:var(--muted)}.error-panel{display:none;max-width:900px;margin:12px auto 0;padding:12px 14px;background:#fff5f5;border:1px solid #fecdca;border-left:4px solid var(--red);border-radius:10px;color:#912018}.error-panel.open{display:block}
 .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:750}.primary{background:var(--blue);color:#fff}.secondary{background:#fff;border:1px solid var(--line);color:var(--text)}.success{background:var(--green);color:#fff}
 main{max-width:900px;margin:auto;padding:18px}.section{display:none;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(16,24,40,.06)}.section.active{display:block}
 h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.full{grid-column:1/-1}
@@ -40,7 +40,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 .notice-copy .company-block{text-align:center;margin-top:24px}
 .modalBack{position:fixed;inset:0;background:rgba(16,24,40,.65);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}.modalBack.open{display:flex}.modal{width:min(760px,96vw);background:#fff;border-radius:18px;padding:18px}.modal canvas{width:100%;height:260px;border:2px solid #98a2b3;border-radius:12px;touch-action:none}
 .pdf-preview-modal{width:min(1100px,98vw);height:min(92vh,920px);display:flex;flex-direction:column}
-.pdf-preview-modal iframe{width:100%;flex:1;border:1px solid var(--line);border-radius:12px;background:#fff}
+.pdf-preview-modal iframe{width:100%;flex:1;border:1px solid var(--line);border-radius:12px;background:#fff}.pdf-preview-pages{flex:1;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#eef2f6;padding:14px}.pdf-preview-page{display:block;max-width:100%;height:auto;margin:0 auto 16px;background:#fff;box-shadow:0 2px 10px rgba(16,24,40,.16)}.pdf-preview-page:last-child{margin-bottom:0}
 .pdf-preview-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.modalActions{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
 @media(max-width:650px){main{padding:10px}.section{padding:16px}.grid,.choice-row,.compact-demographics,.compact-measures{grid-template-columns:1fr}header{align-items:stretch}.brand{width:100%}}
 </style>
@@ -60,6 +60,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
   <span class="status" id="status"></span>
   <div class="progress"><div id="progressBar"></div></div>
 </header>
+<div class="error-panel" id="errorPanel"></div>
 <main>
 <section class="section active" data-key="agent"><h1>Agent Information</h1><p class="sub">Entered once and reused throughout the application.</p>
 <div class="grid">
@@ -671,8 +672,8 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <div class="field full"><label>Applicant's Name</label><input data-field="Applicants Name_2"></div>
 <div class="field"><label>Social Security Number</label><input data-field="Social Security Number_4"></div>
 <div class="field"><label>City</label><input data-field="City_5"></div><div class="field"><label>State</label><input data-field="State_5"></div><div class="field"><label>Date</label><input data-field="Date"></div>
-<div class="sigbox"><h3>Applicant Signature <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('auth-applicant','Prescription Authorization - Applicant')">Sign</button><div id="auth-applicant-status">Required</div></div>
-<div class="sigbox"><h3>Agent Signature <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('auth-agent','Prescription Authorization - Agent')">Sign</button><div id="auth-agent-status">Required</div></div>
+<div class="sigbox"><h3>Applicant Signature <span class="signature-needed">Required</span></h3><div class="signature-note">Signature will be collected on the Signature Handling page and placed on the Prescription Authorization page.</div></div>
+<div class="sigbox"><h3>Agent Signature <span class="signature-needed">Required</span></h3><div class="signature-note">Signature will be collected on the Signature Handling page and placed on the Prescription Authorization page.</div></div>
 </div></section>
 
 <section class="section" data-key="coverage"><h1>Plan Amount and Payment Mode</h1>
@@ -727,6 +728,8 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <button class="choice selected" onclick="signMode('inperson',this)">Sign in person on this device</button>
 <button class="choice" onclick="signMode('email',this)">Company obtains signatures by email</button></div>
 <div id="directSigs" style="margin-top:16px"><div class="grid">
+<div class="sigbox"><h3>Prescription Authorization - Applicant <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('auth-applicant','Prescription Authorization - Applicant')">Sign</button><div id="auth-applicant-status">Required</div></div>
+<div class="sigbox"><h3>Prescription Authorization - Agent <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('auth-agent','Prescription Authorization - Agent')">Sign</button><div id="auth-agent-status">Required</div></div>
 <div class="sigbox"><h3>Application - Proposed Insured <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('app-insured','Application - Proposed Insured')">Sign</button><div id="app-insured-status">Required</div></div>
 <div class="sigbox"><h3>Application - Owner <span class="signature-needed">When applicable</span></h3><button class="btn primary" onclick="openSig('app-owner','Application - Owner')">Sign</button><div id="app-owner-status">When required</div></div>
 <div class="sigbox"><h3>Application - Agent <span class="signature-needed">Required</span></h3><button class="btn primary" onclick="openSig('app-agent','Application - Agent')">Sign</button><div id="app-agent-status">Required</div></div>
@@ -745,7 +748,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 </div></div></section>
 
 <section class="section" data-key="review"><h1>Review and Generate PDF</h1>
-<div class="notice">Use Preview PDF to review a read-only copy of the completed packet. Correct anything in the appropriate application section, then return here to generate the final downloadable packet.</div>
+<div class="notice">Use Preview PDF to review a read-only copy of the completed packet. Preview does not require unfinished future sections. Correct anything in the appropriate application section, then return here to generate the final downloadable packet.</div>
 <div style="display:flex;gap:10px;flex-wrap:wrap">
 <button class="btn secondary" onclick="previewPdf()">Preview Completed Packet</button>
 <button class="btn success" onclick="generatePdf(true)">Generate and Download Final Packet</button>
@@ -764,7 +767,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
       </div>
       <button class="btn secondary" onclick="closePdfPreview()">Close</button>
     </div>
-    <iframe id="pdfPreviewFrame" title="Completed application packet preview"></iframe>
+    <div id="pdfPreviewPages" class="pdf-preview-pages" aria-label="Completed application packet preview"></div>
   </div>
 </div>
 
@@ -772,6 +775,7 @@ h1,h2,h3{margin-top:0}.sub{color:var(--muted)}.grid{display:grid;grid-template-c
 <canvas id="sigCanvas" width="1400" height="480"></canvas><div class="modalActions"><button class="btn secondary" onclick="clearSig()">Clear</button><div><button class="btn secondary" onclick="closeSig()">Cancel</button> <button class="btn primary" onclick="saveSig()">Use Signature</button></div></div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const sections=['agent','insured','owner','payor','beneficiary','replacement','physician','tobacco','medical','details','authorization','coverage','payment','agentstatement','signatures','review'];
 const titles=['Agent Information','Proposed Insured','Owner','Payor','Beneficiaries','Replacement','Physician','Tobacco/Nicotine','Medical Questions','Medical Details','Prescription Authorization','Plan Amount','Payment Information','Agent Statement','Signatures','Review'];
@@ -1215,22 +1219,56 @@ async function buildReplacementPdf(){
 
 let currentPreviewUrl='';
 
+function showSingleError(message){
+  const panel=document.getElementById('errorPanel');
+  panel.textContent=message;
+  panel.classList.add('open');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function clearSingleError(){
+  const panel=document.getElementById('errorPanel');
+  panel.textContent='';
+  panel.classList.remove('open');
+}
 async function previewPdf(){
+  clearSingleError();
   await generatePdf(false);
 }
 function closePdfPreview(){
   document.getElementById('pdfPreviewModal').classList.remove('open');
-  document.getElementById('pdfPreviewFrame').src='';
+  document.getElementById('pdfPreviewPages').innerHTML='';
   if(currentPreviewUrl){
     URL.revokeObjectURL(currentPreviewUrl);
     currentPreviewUrl='';
+  }
+}
+async function renderPdfPreview(pdfBytes){
+  if(!window.pdfjsLib)throw new Error('The preview viewer could not load.');
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const container=document.getElementById('pdfPreviewPages');
+  container.innerHTML='';
+  const doc=await pdfjsLib.getDocument({data:pdfBytes}).promise;
+  for(let pageNumber=1;pageNumber<=doc.numPages;pageNumber++){
+    const page=await doc.getPage(pageNumber);
+    const baseViewport=page.getViewport({scale:1});
+    const available=Math.max(280,Math.min(900,container.clientWidth-30));
+    const scale=available/baseViewport.width;
+    const viewport=page.getViewport({scale});
+    const canvas=document.createElement('canvas');
+    canvas.className='pdf-preview-page';
+    canvas.width=Math.ceil(viewport.width);
+    canvas.height=Math.ceil(viewport.height);
+    canvas.setAttribute('aria-label','Packet page '+pageNumber+' of '+doc.numPages);
+    container.appendChild(canvas);
+    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
   }
 }
 document.getElementById('pdfPreviewModal').addEventListener('click',e=>{
   if(e.target.id==='pdfPreviewModal')closePdfPreview();
 });
 
-async function generatePdf(downloadFinal=false){syncCopies();syncEmailFields();buildMedicalRows();const btns=document.querySelectorAll('button');btns.forEach(b=>b.disabled=true);status('Creating official PDF...');try{const bytes=await fetch('SNL_iCare-DocuSign.pdf').then(r=>r.arrayBuffer());const pdf=await PDFLib.PDFDocument.load(bytes);const form=pdf.getForm();
+async function generatePdf(downloadFinal=false){
+clearSingleError();syncCopies();syncEmailFields();buildMedicalRows();const btns=document.querySelectorAll('button');btns.forEach(b=>b.disabled=true);status('Creating official PDF...');try{const bytes=await fetch('SNL_iCare-DocuSign.pdf').then(r=>r.arrayBuffer());const pdf=await PDFLib.PDFDocument.load(bytes);const form=pdf.getForm();
 const values={};document.querySelectorAll('[data-field]').forEach(el=>{if(el.value)values[el.dataset.field]=el.value});
 const appDate=(document.getElementById('applicationDate')?.value||'').trim();
 if(appDate){
@@ -1260,16 +1298,44 @@ if(birthDate){
   values['Birthdate']=formatDateMMDDYYYY(birthDate);
   values['Age']=String(calculateAge(birthDate));
 }
-if(!validateEmailField()||
-   !validateEmailElement(document.getElementById('ownerEmail'))||
-   !validateEmailElement(document.getElementById('payorEmail'))){
-  alert('Please enter valid email addresses before generating the PDF.');
-  throw new Error('Invalid email');
-}
-if(!validApplicationDate(appDate)){
-  document.getElementById('applicationDate').classList.add('field-error');
-  alert('Please enter the Application Date in mm/dd/yyyy format before generating the PDF.');
-  throw new Error('Invalid application date');
+if(downloadFinal){
+  const emailErrors=[];
+  const insuredEmail=document.getElementById('insuredEmail');
+  if(!validateEmailElement(insuredEmail))emailErrors.push("Proposed Insured email is invalid.");
+
+  const ownerIsOther=!document.getElementById('ownerFields').classList.contains('hidden');
+  if(ownerIsOther&&!validateEmailElement(document.getElementById('ownerEmail'))){
+    emailErrors.push("Owner email is invalid.");
+  }
+
+  const payorIsOther=!document.getElementById('payorFields').classList.contains('hidden');
+  if(payorIsOther&&!validateEmailElement(document.getElementById('payorEmail'))){
+    emailErrors.push("Payor email is invalid.");
+  }
+
+  if(emailMode){
+    [
+      ['emailInsuredEmail',"Insured email on the Email Collection Form is invalid."],
+      ['emailOwnerEmail',"Owner email on the Email Collection Form is invalid."],
+      ['emailPayorEmail',"Payor email on the Email Collection Form is invalid."],
+      ['emailAgentEmail',"Agent email on the Email Collection Form is invalid."]
+    ].forEach(([id,message])=>{
+      if(!validateEmailElement(document.getElementById(id)))emailErrors.push(message);
+    });
+  }
+
+  if(emailErrors.length){
+    showSingleError(emailErrors.join(' '));
+    throw new Error(emailErrors.join(' '));
+  }
+
+  if(!validApplicationDate(appDate)){
+    document.getElementById('applicationDate').classList.add('field-error');
+    showSingleError('Please enter the Application Date in mm/dd/yyyy format before generating the final packet.');
+    throw new Error('Invalid application date');
+  }else{
+    document.getElementById('applicationDate').classList.remove('field-error');
+  }
 }else{
   document.getElementById('applicationDate').classList.remove('field-error');
 }
@@ -1281,7 +1347,8 @@ if(!emailMode){for(const [id,data] of Object.entries(signatures)){const p=signat
 let output=pdf;
 if(!emailMode){
   output=await PDFLib.PDFDocument.create();
-  const pages=await output.copyPages(pdf,[1,2,3,4]);
+  const pageIndexes=downloadFinal?[1,2,3,4]:[0,1,2,3,4];
+  const pages=await output.copyPages(pdf,pageIndexes);
   pages.forEach(p=>output.addPage(p));
 }
 const replacementPdf=await buildReplacementPdf();
@@ -1302,13 +1369,15 @@ if(downloadFinal){
 }else{
   if(currentPreviewUrl)URL.revokeObjectURL(currentPreviewUrl);
   currentPreviewUrl=url;
-  document.getElementById('pdfPreviewFrame').src=url;
   document.getElementById('pdfPreviewModal').classList.add('open');
-  status('Preview ready.');
+  await renderPdfPreview(out);
+  status('Preview ready — all packet pages are shown below.');
 }
 }catch(e){
   console.error(e);
-  alert('The PDF could not be created. Please try again.');
+  if(!document.getElementById('errorPanel').classList.contains('open')){
+    showSingleError('The PDF could not be created. Technical detail: '+(e?.message||'Unknown error'));
+  }
 }finally{
   btns.forEach(b=>b.disabled=false);
 }}
